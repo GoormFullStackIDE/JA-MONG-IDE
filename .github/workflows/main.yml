@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    # 자바 설정 업데이트
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin' # Eclipse Temurin은 AdoptOpenJDK의 후속 버전입니다.
+        
+    - name: Build and Test Spring Application
+      run: |
+        cd backend # 백엔드 프로젝트 폴더로 이동
+        ./mvnw clean install # Maven을 사용해 빌드 및 테스트 실행
+        
+    # Node.js 설정 업데이트
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+        
+    - name: Install dependencies
+      run: |
+        cd frontend # 프론트엔드 프로젝트 폴더로 이동
+        npm install
+        
+    - name: Run tests
+      run: |
+        npm test
+        
+    - name: Build React App
+      run: |
+        npm run build
