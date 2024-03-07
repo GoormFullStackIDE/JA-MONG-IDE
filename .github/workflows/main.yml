@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     
     # 자바 설정 업데이트
     - name: Set up JDK 17
@@ -27,7 +27,7 @@ jobs:
         
     # Node.js 설정 업데이트
     - name: Setup Node.js 20.10.0
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: '20.10.0'
         
