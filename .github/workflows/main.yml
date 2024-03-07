@@ -26,7 +26,7 @@ jobs:
         ./mvnw clean install # Maven을 사용해 빌드 및 테스트 실행
         
     # Node.js 설정 업데이트
-    - name: Setup Node.js 20
+    - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '20'
