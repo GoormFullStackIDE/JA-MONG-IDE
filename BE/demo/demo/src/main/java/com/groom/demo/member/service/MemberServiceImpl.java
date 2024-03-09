@@ -1,6 +1,6 @@
 package com.groom.demo.member.service;
 
-import com.groom.demo.member.dto.MemberResponseDto;
+import com.groom.demo.member.dto.MemberPageInfoDto;
 import com.groom.demo.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ public class MemberServiceImpl implements MemberService{
     private MemberRepository memberRepository;
 
     @Override
-    public List<MemberResponseDto> memberdata(String memberEmail, String memberPass) {
+    public List<MemberPageInfoDto> memberdata(String memberEmail, String memberPass) {
         return memberRepository.memberdata(memberEmail, memberPass);
     }
 }
