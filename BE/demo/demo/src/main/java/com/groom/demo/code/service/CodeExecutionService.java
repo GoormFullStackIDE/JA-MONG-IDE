@@ -17,7 +17,7 @@ public class CodeExecutionService {
     public ExecutionResult executeCode(CodeSubmission submission) {
         try {
             // Docker 컨테이너 생성 및 설정
-            String imageId = "python:3.8"; // 예시로 python 이미지 사용, 실제로는 submission.getLanguage()에 따라 결정됨
+            String imageId = submission.getLanguage();
             String code = submission.getCode();
 
             CreateContainerResponse container = dockerClient.createContainerCmd(imageId)

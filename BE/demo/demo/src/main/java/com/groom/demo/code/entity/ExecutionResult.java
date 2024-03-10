@@ -1,24 +1,19 @@
 package com.groom.demo.code.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
 @Getter @Setter
+@NoArgsConstructor
 public class ExecutionResult {
     // Getters and Setters
     private boolean success;
     private String output;
     private String error;
-    private long executionTime; // Optional
+    private long executionTime;
 
-    // 기본 생성자, 인자를 받는 생성자, getters 및 setters 생략
-
-    public ExecutionResult(boolean success, String output, String error) {
-        this.success = success;
-        this.output = output;
-        this.error = error;
-
+    public ExecutionResult(boolean b, String logs, String s) {
     }
-
 }
