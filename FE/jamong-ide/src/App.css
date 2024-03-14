@@ -1,7 +1,13 @@
 .App {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  /* display: block;
+  background-color: #fffdfb; */
 }
 
+div {
+  display: 'flex';
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -14,7 +20,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #fffdfb;
   min-height: 100vh;
   display: flex;
   flex-direction: column;

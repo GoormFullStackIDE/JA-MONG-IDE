@@ -1,0 +1,21 @@
+.container_box_01 {
+  width: 100%;
+  margin-left: auto;
+  box-sizing: border-box;
+  margin-right: auto;
+  display: block;
+  padding-left: 16px;
+  padding-right: 16px;
+  margin-top: 32px;
+  margin-bottom: 32px;
+  background-color: #fffdfb;
+}
+.container_box_02 {
+  background-color: #fffdfb;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  height: 100vh;
+  overflow: auto;
+}
