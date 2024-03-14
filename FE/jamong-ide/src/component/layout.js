@@ -97,7 +97,7 @@ function Layout() {
       <Box
         component="main"
         sx={{
-          backgroundColor: '##FFFDFB',
+          backgroundColor: '#FFFDFB',
           flexGrow: 1,
           //   height: '100vh',
           overflow: 'auto',
