@@ -9,8 +9,10 @@ import MuiDrawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
+import { useLocation } from 'react-router-dom';
 
 function Layout() {
+  const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
 
   const drawerWidth = 230;
@@ -47,7 +49,11 @@ function Layout() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <Header setOpen={setOpen} open={open} />
+      {pathname === '/jamong/signup' ? (
+        <></>
+      ) : (
+        <Header setOpen={setOpen} open={open} />
+      )}
       <Drawer
         variant="permanent"
         sx={{
