@@ -1,36 +1,68 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ListItemButton from '@mui/material/ListItemButton';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import {
   ListItemIcon,
   ListItemText,
-  Collapse,
-  Breadcrumbs,
 } from '@mui/material';
-import Divider from '@mui/material/Divider';
-import List from '@mui/material/List';
-import GroupsIcon from '@mui/icons-material/Groups';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import '../component/mainListItems.css';
+
 
 function MainListItems() {
+  const [isSpaceListOpen, setIsSpaceListOpen] = useState(false);
+
+  const toggleSpaceList = () => {
+    setIsSpaceListOpen(!isSpaceListOpen);
+  };
+
   return (
-    // <List component="nav">
     <div>
       <Link to="/" style={{ color: 'black', textDecoration: 'none' }}>
         <ListItemButton>
-          <ListItemIcon>아이콘</ListItemIcon>
+          <ListItemIcon>
+            <div className='list_profile'>
+              <p className='list_name'>김이름</p>
+              <p className='list_email'>example@mail.com</p>
+            </div>
+          </ListItemIcon>
           <ListItemText primary="" />
         </ListItemButton>
       </Link>
       <Link to="/" style={{ color: 'black', textDecoration: 'none' }}>
         <ListItemButton>
-          <ListItemIcon>아이콘</ListItemIcon>
+          <ListItemIcon>
+            <p className='alarm'>알림</p>
+          </ListItemIcon>
           <ListItemText primary="" />
         </ListItemButton>
       </Link>
+      <ListItemButton onClick={toggleSpaceList} style={{display: 'flex', alignItems: 'center'}}>
+        <div className='space'>
+          <p>스페이스</p>
+          {isSpaceListOpen ? (
+            <div className="arrow-up" />
+          ) : (
+            <div className="arrow-down" />
+          )}
+        </div>
+      </ListItemButton>
+      {isSpaceListOpen && (
+        <div className='space_list'>
+          <Link to="/" style={{ color: 'black', textDecoration: 'none' }}>
+            <p>모든 컨테이너</p>
+          </Link>
+          <Link to="/" style={{ color: 'black', textDecoration: 'none' }}>
+            <p>내 컨테이너</p>
+          </Link>
+          <Link to="/" style={{ color: 'black', textDecoration: 'none' }}>
+            <p>공유받은 컨테이너</p>
+          </Link>
+        </div>
+      )}
     </div>
-    //   <Divider sx={{ my: 1 }} />
-    // </List>
   );
 }
+
 export default MainListItems;
