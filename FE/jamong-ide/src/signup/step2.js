@@ -82,7 +82,7 @@ export default function Step2() {
     }
   }
   function save() {
-    navigate('jamong/login');
+    navigate('/login');
   }
 
   return (

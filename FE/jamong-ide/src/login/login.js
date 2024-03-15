@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function LoginPage() {
+  const navigate = useNavigate();
+
   return (
     <div id="login">
       <div className="logo_img_box">
@@ -15,7 +18,12 @@ function LoginPage() {
             <button className="login_button_02">아이디 찾기</button>
             <button className="login_button_02">비밀번호 찾기</button>
             <button className="login_button_02"></button>
-            <button className="login_button_02">회원가입</button>
+            <button
+              className="login_button_02"
+              onClick={() => navigate('/signup')}
+            >
+              회원가입
+            </button>
           </div>
           <hr className="divider" />
         </div>
@@ -23,7 +31,6 @@ function LoginPage() {
           <button className="social_googlebtn">구글로 로그인</button>
           <button className="social_naverbtn">네이버로 로그인</button>
           <button className="social_kakaobtn">카카오로 로그인</button>
-          <button className="social_githubbtn">깃허브로 로그인</button>
         </div>
       </div>
     </div>

@@ -52,7 +52,7 @@
   animation: fadeinUp_a 0.8s;
 }
 
-/* 로그인버튼 */
+/* 濡쒓렇�몃쾭�� */
 .login_button_01 {
   padding: 10px 10px 10px 10px;
   margin-top: 15px;
@@ -84,7 +84,7 @@
   border-style: solid;
 }
 
-/* 소셜로그인버튼 */
+/* �뚯뀥濡쒓렇�몃쾭�� */
 
 .social_googlebtn {
   padding: 10px 10px 10px 10px;
@@ -122,16 +122,4 @@
   cursor: pointer;
   background-color: #f7d90c;
   color: #000;
-}
-.social_githubbtn {
-  padding: 10px 10px 10px 10px;
-  margin-top: 20px;
-  width: 46.5vh;
-  height: 42px;
-  border: 0px;
-  border-radius: 4px;
-  text-align: center;
-  cursor: pointer;
-  background-color: #2f2f2f;
-  color: #fff;
 }

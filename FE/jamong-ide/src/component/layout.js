@@ -7,7 +7,7 @@ import MainListItems from './mainListItems';
 import List from '@mui/material/List';
 import MuiDrawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { useLocation } from 'react-router-dom';
 
@@ -49,7 +49,9 @@ function Layout() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      {pathname === '/jamong/signup' ? (
+      {pathname === '/signup' ? (
+        <></>
+      ) : pathname === '/login' ? (
         <></>
       ) : (
         <Header setOpen={setOpen} open={open} />
@@ -99,7 +101,7 @@ function Layout() {
         sx={{
           backgroundColor: '#FFFDFB',
           flexGrow: 1,
-          //   height: '100vh',
+          height: '100vh',
           overflow: 'auto',
         }}
       >
