@@ -1,0 +1,137 @@
+.button_box {
+  width: 80vh;
+  padding-top: 5px;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+}
+
+.button_01 {
+  padding: 10px 10px 10px 10px;
+  margin-top: 15px;
+  width: 42.5vh;
+  height: 42px;
+  border: 0px;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+  background-color: #ff6d59;
+  color: #fff;
+  transition: all ease-in-out 0.3s;
+}
+.button_01 :hover {
+  opacity: 0.8;
+}
+
+.button_02 {
+  margin: 0 5px;
+  width: 7vh;
+  border: 0px;
+  height: 42px;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #ff9b8d;
+  color: #fff;
+  /* transition: all ease-in-out 0.3s; */
+}
+
+.button_03 {
+  width: 40vh;
+  border: 0px;
+  height: 42px;
+  border-radius: 4px;
+  justify-content: center;
+  background-color: #ffebe5;
+  color: #666666;
+  /* transition: all ease-in-out 0.3s; */
+}
+.button_gradient {
+  color: #fff;
+  background: linear-gradient(135deg, #ff6d59, #ff9b8d);
+  /* animation: animate 2s ease-out infinite; */
+  animation: fadeinUp_a 0.8s;
+}
+
+/* 로그인버튼 */
+.login_button_01 {
+  padding: 10px 10px 10px 10px;
+  margin-top: 15px;
+  width: 46.5vh;
+  height: 42px;
+  border: 0px;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+  background-color: #ff6d59;
+  color: #fff;
+  transition: all ease-in-out 0.3s;
+}
+
+.login_button_02 {
+  width: 46.5vh;
+  margin-top: 8px;
+  height: 42px;
+  border: 0px;
+  cursor: pointer;
+  background-color: #ffebe5;
+  color: #666666;
+}
+
+.divider {
+  width: 46.5vh;
+  color: #ff9b8d;
+  border-color: #ff9b8d;
+  border-style: solid;
+}
+
+/* 소셜로그인버튼 */
+
+.social_googlebtn {
+  padding: 10px 10px 10px 10px;
+  margin-top: 20px;
+  width: 46.5vh;
+  height: 42px;
+  border: 0px;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+  background-color: #fff;
+  color: #000;
+  /* transition: all ease-in-out 0.3s; */
+}
+.social_naverbtn {
+  padding: 10px 10px 10px 10px;
+  margin-top: 20px;
+  width: 46.5vh;
+  height: 42px;
+  border: 0px;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+  background-color: #03ca5b;
+  color: #000;
+}
+.social_kakaobtn {
+  padding: 10px 10px 10px 10px;
+  margin-top: 20px;
+  width: 46.5vh;
+  height: 42px;
+  border: 0px;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+  background-color: #f7d90c;
+  color: #000;
+}
+.social_githubbtn {
+  padding: 10px 10px 10px 10px;
+  margin-top: 20px;
+  width: 46.5vh;
+  height: 42px;
+  border: 0px;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+  background-color: #2f2f2f;
+  color: #fff;
+}

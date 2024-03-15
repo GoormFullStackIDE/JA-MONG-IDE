@@ -1,0 +1,179 @@
+img {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  width: 20vh;
+  /* height: 50%; */
+}
+.check {
+  width: 3vh;
+  position: absolute;
+  margin: 5px;
+  padding: 5px;
+}
+.logo_img_box {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+#join {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  /* padding-top: 60px; */
+  min-height: 700px;
+}
+
+.join_box {
+  margin: 10px;
+  padding: 40px 0px;
+  width: 80vh;
+  height: 85vh;
+  display: inline;
+  background-color: #ffebe5;
+  border-radius: 4px;
+  max-height: 650px;
+  min-width: 70vh;
+  text-align: center;
+}
+
+.join_box_01 {
+  min-width: 30vh;
+  padding: 35px 20px 20px 20px;
+}
+
+.join_box_02 {
+  justify-content: center;
+  min-width: 30vh;
+  padding: 2px 20px 2px 20px;
+}
+
+.join_box_03 {
+  padding: 20px 20px 2px 20px;
+  justify-content: center;
+  align-items: flex-start;
+  width: 75vh;
+  height: 85vh;
+}
+
+.join_box_03_1 {
+  margin: 10px;
+  height: 200px;
+  /* border: 1px solid #ffebe5; */
+  border-radius: 10px;
+  background-color: #fffafa;
+}
+.join_box_03_1 iframe {
+  padding: 5;
+  width: 100%;
+  height: 100%;
+}
+.join_box_04 {
+  padding: 0 10px 10px 10px;
+  text-align: end;
+}
+
+.join_box_05 {
+  padding-bottom: 10px;
+}
+
+/* 스크롤바 */
+.join_box_03_1 iframe::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  display: none;
+  background-color: #ff9b8d;
+  color: #ff9b8d;
+}
+.join_box_03_1 iframe::-webkit-scrollbar-button:start:decrement,
+.join_box_03_1 iframe::-webkit-scrollbar-button:end:increment {
+  height: 8px;
+  background-color: #ff9b8d;
+}
+.join_box_03_1 iframe::-webkit-scrollbar-track {
+  background-color: #ff9b8d;
+  -webkit-border-radius: 8px;
+}
+.join_box_03_1 iframe::-webkit-scrollbar-thumb:vertical {
+  height: 50px;
+  color: #ff9b8d;
+  border: 0;
+  -webkit-border-radius: 6px;
+}
+.join_box_03_1::-webkit-scrollbar-thumb {
+  color: #ff9b8d;
+  border-radius: 8px;
+}
+
+/* 로그인 */
+#login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  min-height: 700px;
+}
+
+.login_box {
+  margin: 10px;
+  padding: 20px 0px;
+  width: 80vh;
+  height: 80vh;
+  display: inline;
+  background-color: #ffebe5;
+  border-radius: 4px;
+  max-height: 630px;
+  min-width: 70vh;
+  text-align: center;
+}
+
+.login_box_01 {
+  min-width: 30vh;
+  padding: 20px 20px 20px 20px;
+}
+
+.login_button_box_01 {
+  display: inline-flex;
+  width: 50vh;
+  height: 6vh;
+  padding: 1vh;
+}
+
+.social_login_box01 {
+  display: contents;
+  width: 50vh;
+  min-width: 30vh;
+  padding: 20px 20px 20px 20px;
+}
+
+/* 아이디찾기 */
+#find {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  min-height: 700px;
+}
+
+.find_box {
+  margin: 10px;
+  padding: 20px 0px;
+  width: 80vh;
+  height: 80vh;
+  display: inline;
+  background-color: #ffebe5;
+  border-radius: 4px;
+  max-height: 630px;
+  min-width: 70vh;
+  text-align: center;
+}

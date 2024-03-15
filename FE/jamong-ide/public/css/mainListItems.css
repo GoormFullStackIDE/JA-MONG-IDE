@@ -1,0 +1,44 @@
+/* 화살표 스타일 */
+.list_profile{
+  width: 180px;
+  background-color: #FFEEE5;
+  border: none;
+  padding: 2px 10px;
+  border-radius: 10px;
+  color: #333;
+}
+.list_profile>p{
+  margin: 15px 10px;
+}
+.space{
+  padding-left: 15px;
+  height: 40px;
+  display: flex;
+  position: relative;
+}
+.alarm{
+  padding-left: 15px;
+  height: 10px;
+}
+.arrow-up {
+    margin-top: 20px;
+    margin-left: 90px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 8px solid black;
+  }
+  
+  .arrow-down {
+    width: 0;
+    height: 0;
+    margin-top: 20px;
+    margin-left: 90px;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 8px solid black;
+  }
+  .space_list{
+    padding-left: 30px;
+  }
