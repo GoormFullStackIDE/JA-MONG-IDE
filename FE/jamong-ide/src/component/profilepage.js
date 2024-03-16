@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 
 const ProfilePage = () => {
+  const [popupVisible, setPopupVisible] = useState(false);
+
   const handleImageSelect = () => {
     console.log("이미지 선택 버튼 클릭됨");
     // 이미지 선택 버튼이 클릭되었을 때 수행할 동작 추가
@@ -17,8 +19,11 @@ const ProfilePage = () => {
   };
 
   const handleInfoChange = () => {
-    console.log("정보 변경 버튼 클릭됨");
-    // 정보 변경 버튼이 클릭되었을 때 수행할 동작 추가
+    setPopupVisible(true); 
+  };
+
+  const handleClosePopup = () => {
+    setPopupVisible(false); 
   };
 
   return (
@@ -45,6 +50,15 @@ const ProfilePage = () => {
         <div className="info_change">
           <button onClick={handleInfoChange}>정보 변경</button>
         </div>
+        {popupVisible && (
+        <div className="popup">
+          <div className="popup_content">
+          <p>개인정보 변경이 완료되었습니다!</p>
+          <button className="pop_ok" onClick={handleClosePopup}>확인</button>
+          <button className="pop_close" onClick={handleClosePopup}>X</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
