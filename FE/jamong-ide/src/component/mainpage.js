@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+
 const Mainpage = () => {
     const [showModal, setShowModal] = useState(false);
     const [selectedStack, setSelectedStack] = useState(""); // 드롭다운의 선택된 값의 상태
@@ -96,10 +97,6 @@ const Mainpage = () => {
                     <p className='logout'>로그아웃</p>
                 </div>
             </div>
-
-
-            {/* 사이드바 */}
-                
 
         </div>
     );

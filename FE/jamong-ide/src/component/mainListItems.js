@@ -5,16 +5,16 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import '../component/mainListItems.css';
-
 
 function MainListItems() {
   const [isSpaceListOpen, setIsSpaceListOpen] = useState(false);
 
   const toggleSpaceList = () => {
     setIsSpaceListOpen(!isSpaceListOpen);
+  };
+
+  const handleSpaceItemClick = (e) => {
+    e.stopPropagation();
   };
 
   return (
@@ -26,14 +26,6 @@ function MainListItems() {
               <p className='list_name'>김이름</p>
               <p className='list_email'>example@mail.com</p>
             </div>
-          </ListItemIcon>
-          <ListItemText primary="" />
-        </ListItemButton>
-      </Link>
-      <Link to="/" style={{ color: 'black', textDecoration: 'none' }}>
-        <ListItemButton>
-          <ListItemIcon>
-            <p className='alarm'>알림</p>
           </ListItemIcon>
           <ListItemText primary="" />
         </ListItemButton>
@@ -50,15 +42,15 @@ function MainListItems() {
       </ListItemButton>
       {isSpaceListOpen && (
         <div className='space_list'>
-          <Link to="/" style={{ color: 'black', textDecoration: 'none' }}>
-            <p>모든 컨테이너</p>
-          </Link>
-          <Link to="/" style={{ color: 'black', textDecoration: 'none' }}>
-            <p>내 컨테이너</p>
-          </Link>
-          <Link to="/" style={{ color: 'black', textDecoration: 'none' }}>
-            <p>공유받은 컨테이너</p>
-          </Link>
+          <h4 style={{ color: '#666666', textDecoration: 'none' }} onClick={handleSpaceItemClick}>
+          모든 컨테이너
+          </h4>
+          <h4 style={{ color: '#666666', textDecoration: 'none' }} onClick={handleSpaceItemClick}>
+            내 컨테이너
+          </h4>
+          <h4 style={{ color: '#666666', textDecoration: 'none' }} onClick={handleSpaceItemClick}>
+            공유받은 컨테이너
+          </h4>
         </div>
       )}
     </div>
