@@ -13,7 +13,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.DefaultLoginPageConfigurer;
+import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
+import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -25,14 +28,11 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
-import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static com.groom.demo.auth.Constants.FIRST_OAUTH2_URL;
+import static com.groom.demo.auth.Constants.SECOND_OAUTH2_AFTER_SPRING_LOGIN_URL;
 
 @Configuration
 @EnableWebSecurity(debug = false)
@@ -44,7 +44,6 @@ public class SecurityConfig {
 
 
     private final JsonWebTokenProvider jsonWebTokenProvider;
-
 
     @Bean
     public AntPathMatcher antPathMatcher() {
@@ -58,12 +57,13 @@ public class SecurityConfig {
     }
 
     //(1) CORS 세팅 부분 (CORS_HEADER_URIS에서 세팅한 값들은 CORS를 허용한다)
+    // 백, 프론트 모두 구현이 완료 된 뒤, 한 서버에 동일하게 올라가면 풀어둔 cors 설정을 해제한 것을 재설정한다.(지금 풀어뒀음)
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","https://xyz-gen.com","https://www.xyz-gen.com","http://localhost:5500"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3009","http://localhost:8088","https://jamongide.kro.kr","https://www.jamongide.kro.kr"));
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
         configuration.setExposedHeaders(Arrays.asList("Authorization","Sequence","Nickname","Image"));
         configuration.setAllowedHeaders(Arrays.asList("X-Requested-With", "Origin", "Content-Type", "Accept",
@@ -71,8 +71,8 @@ public class SecurityConfig {
                 "Access-Control-Allow-Origin", "Access-Control-Expose-Headers", "Access-Control-Max-Age",
                 "Access-Control-Request-Headers", "Access-Control-Request-Method", "Age", "Allow", "Alternates",
                 "Content-Range", "Content-Disposition", "Content-Description"));
+        configuration.setAllowedOriginPatterns(Collections.singletonList("http://localhost:3009"));
         configuration.setMaxAge(60L);
-
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -168,6 +168,7 @@ public class SecurityConfig {
 //        http.cors().configurationSource(corsConfigurationSource());
         http.cors(httpSecurityCorsConfigurer -> corsConfigurationSource());
         //기본 설정 해제와 경로 설정
+        // http 부분은 거의 다 풀어놨는데, 뭘 잠궈야하는지 모른다...
 
 
         http
@@ -183,22 +184,28 @@ public class SecurityConfig {
         ;
 
         //로그인 페이지 Disable
+        // 다 풀어놨길래 나도 그냥 풀어놨음 이유는 알아보기 ㅎㅎ;;
         http.getConfigurer(DefaultLoginPageConfigurer.class).disable();
 
         //(2) oauth2 설정
+        // normal 로그인을 제외한 소셜로그인 부분에서 oauth2가 작동하도록 구현(소셜 로그인)
+        // 예외사항들을 모두 여기서 처리해야하므로 설정했음.
+        // 성공시 리다이렉션되어서 로그인 처리 됨.
         http.oauth2Login(oauth2 -> oauth2
                 .authorizationEndpoint(authorization -> authorization
-                        .baseUri(Constants.BASE_URI)                                                                                // 해당 URL로 갈 경우, OAuth 실행 (ex: /user/login -> /user/login/kakao,/user/login/google.. 다 여기로)
+                        .baseUri(FIRST_OAUTH2_URL)   //확정                                                                             // 해당 URL로 갈 경우, OAuth 실행 (ex: /user/login -> /user/login/kakao,/user/login/google.. 다 여기로)
                         .authorizationRequestRepository(oAuth2CookieAuthorizationRequestRepository())                                //(2-2) 인가 요청을 시작한 시점부터 인가 요청을 받는 시점까지 인증 데이터를 저장하기 위해 필요한 클래스
                 )
                 .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(customOAuth2UserService()))        //(2-3) OAuth2 로그인 성공 후 사용자 정보를 가져올 때 설정을 담당.	DB에 없는 로그인이면 우리가 만든 OAuth2LoginException으로 가게 설정.
-                .loginProcessingUrl(Constants.SECURITY_LOGIN_PROCESSING_URI)                                                    //  해당 주소가 호출되면 시큐리티가 낚아 채서(post로 오는것) 대신 로그인 진행 -> 컨트롤러를 안만들어도 된다.// 각 소셜 로그인에서 만든 폼에서 값을 받아온다. CustomOAuth2Provider 같이 볼 것.
+                .loginProcessingUrl(SECOND_OAUTH2_AFTER_SPRING_LOGIN_URL)                                                    //  해당 주소가 호출되면 시큐리티가 낚아 채서(post로 오는것) 대신 로그인 진행 -> 컨트롤러를 안만들어도 된다.// 각 소셜 로그인에서 만든 폼에서 값을 받아온다. CustomOAuth2Provider 같이 볼 것.
                 .clientRegistrationRepository(clientRegistrationRepository())                                                    //(2-1) 인증키 세팅
                 .successHandler(customOAuth2UserSuccessHandler())                                                                //(2-4) OAuth2 설정[성공시]
                 .failureHandler(customOAuth2UserFailureHandler())                                                                //(2-5) OAuth2 설정[실패시]
         );
 
         //(3) JWT 설정
+        // 로그인 부분에서는 exception 처리를 해서 돌아가게 설정했음
+        // 그 외 부분에서는 JWT 토근이 없거나, 잘못됐거나, 기간이 지나면 API가 작동하지 않게끔 코드 구현
         http.addFilterBefore(jsonWebTokenCheckFilter(), OAuth2AuthorizationRequestRedirectFilter.class)                                    //(3-1) 단순한 OAuth2AuthorizationRequestRedirectFilter 이전에 발생하는 request 필터. token 가지고 있는지, 유효한지, 확인 하기 위함
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> customAuthenticationEntryPoint());
 //                .exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint());                                    //(3-2) Spring Security 내에서 전역적으로 사용되는 EntryPoint. authenticate 과정에서 에러가 발생하면 (anonymous user일 경우) ExceptionTranslationFilter에서 넘어옴

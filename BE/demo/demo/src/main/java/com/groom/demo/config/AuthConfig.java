@@ -13,11 +13,15 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "auth")
 @Getter
 @Setter
+// application.yml을 읽기 위한 클래스
+// Credentials = application.yml의 id와 secret을 의미한다.
 public class AuthConfig {
-
+    private String emailId;
+    private String emailPw;
+    private String phone;
     private String serverUrl;
-
     private String redirectUrl;
-
     private Map<String, Credentials> credentials;
+    private String coolsmsapikey;
+    private String coolsmssecretkey;
 }
