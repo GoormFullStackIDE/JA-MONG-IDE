@@ -40,6 +40,7 @@ public class CustomOAuth2UserSuccessHandler extends SimpleUrlAuthenticationSucce
         //authentication 객체에서 attribute를 추출하고, CustomAuthenticatedUser를 생성한다.
         CustomAuthenticatedUser customAuthenticatedUser = CustomAuthenticatedUser.mapToObj(((DefaultOAuth2User) authentication.getPrincipal()).getAttributes());
         Long userSeq = customAuthenticatedUser.getUserSequence();
+
         //jwt 토큰을 생성한다.
         JsonWebToken jsonWebToken = JwtTokenUtils.allocateToken(userSeq, customAuthenticatedUser.getRole());
 
@@ -47,7 +48,7 @@ public class CustomOAuth2UserSuccessHandler extends SimpleUrlAuthenticationSucce
         member.changeToken(jsonWebToken.getRefreshToken());
 
         //cookie에서 redirectUrl을 추출하고, redirect 주소를 생성한다.
-        String baseUrl = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME).getValue();
+        String baseUrl = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME).getValue();;
 //        String url = UriComponentsBuilder.fromUriString(baseUrl).queryParam("token", jwtTokenInfo.getAccessToken()).build().toUriString();
 
         //쿠키를 삭제한다.
@@ -67,8 +68,10 @@ public class CustomOAuth2UserSuccessHandler extends SimpleUrlAuthenticationSucce
                 .maxAge(REFRESH_PERIOD)
                 .build();
         response.addHeader("Set-Cookie",cookie.toString());
+        response.addHeader("Authorization",jsonWebToken.getAccessToken());
 
         request.getSession().setMaxInactiveInterval(180); //second
+        // 헤더에 넣을 부분. F12 - Network - Response Header의 데이터를 임의로 만든 것. 오른쪽에 토근값을 전달한다.
         request.getSession().setAttribute("Authorization",jsonWebToken.getAccessToken());
         request.getSession().setAttribute("Sequence",userSeq);
         //리다이렉트 시킨다.

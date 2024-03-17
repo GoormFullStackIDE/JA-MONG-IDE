@@ -6,7 +6,9 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
 
-import static com.groom.demo.auth.Constants.DEFAULT_REDIRECT_URL;
+import static com.groom.demo.auth.Constants.SERVER_URL;
+
+//import static com.groom.demo.auth.Constants.DEFAULT_REDIRECT_URL;
 
 
 public enum CustomOAuth2Provider {
@@ -15,12 +17,13 @@ public enum CustomOAuth2Provider {
         @Override
         public Builder getBuilder(String registrationId) {
             Builder builder = getBuilder(registrationId,
-                    ClientAuthenticationMethod.CLIENT_SECRET_POST, DEFAULT_REDIRECT_URL);
+                    ClientAuthenticationMethod.CLIENT_SECRET_POST, SERVER_URL.concat("/jamong/member/login/callback/{registrationId}"));
             builder.authorizationUri("https://kauth.kakao.com/oauth/authorize");
             builder.tokenUri("https://kauth.kakao.com/oauth/token");
             builder.userInfoUri("https://kapi.kakao.com/v2/user/me");
             builder.userNameAttributeName("id");
             builder.clientName("kakao");
+            builder.scope("profile_nickname", "account_email");
             return builder;
         }
 
@@ -30,7 +33,7 @@ public enum CustomOAuth2Provider {
         @Override
         public Builder getBuilder(String registrationId) {
             ClientRegistration.Builder builder = getBuilder(registrationId,
-                    ClientAuthenticationMethod.CLIENT_SECRET_BASIC, DEFAULT_REDIRECT_URL);
+                    ClientAuthenticationMethod.CLIENT_SECRET_BASIC, SERVER_URL.concat("/jamong/member/login/callback/{registrationId}"));
             builder.scope("profile", "email");
             builder.authorizationUri("https://accounts.google.com/o/oauth2/v2/auth");
             builder.tokenUri("https://www.googleapis.com/oauth2/v4/token");
@@ -46,8 +49,8 @@ public enum CustomOAuth2Provider {
         @Override
         public Builder getBuilder(String registrationId) {
             ClientRegistration.Builder builder = getBuilder(registrationId,
-                    ClientAuthenticationMethod.CLIENT_SECRET_BASIC, DEFAULT_REDIRECT_URL);
-            builder.scope("profile", "email");
+                    ClientAuthenticationMethod.CLIENT_SECRET_BASIC, SERVER_URL.concat("/jamong/member/login/callback/{registrationId}"));
+            builder.scope("name", "email");
             builder.authorizationUri("https://nid.naver.com/oauth2.0/authorize");
             builder.tokenUri("https://nid.naver.com/oauth2.0/token");
             builder.userInfoUri("https://openapi.naver.com/v1/nid/me");
@@ -60,10 +63,14 @@ public enum CustomOAuth2Provider {
         @Override
         public Builder getBuilder(String registrationId) {
             ClientRegistration.Builder builder = getBuilder(registrationId,
-                    ClientAuthenticationMethod.CLIENT_SECRET_BASIC, DEFAULT_REDIRECT_URL);
+                    ClientAuthenticationMethod.CLIENT_SECRET_BASIC, SERVER_URL.concat("/jamong/member/login/callback/{registrationId}"));
+            builder.scope("read:user");
             builder.authorizationUri("https://github.com/login/oauth/authorize");
             builder.tokenUri("https://github.com/login/oauth/access_token");
-            builder.clientName("Github");
+            builder.userInfoUri("https://api.github.com/user");
+            builder.userNameAttributeName("id");
+            builder.clientName("GitHub");
+
             return builder;
         }
     };

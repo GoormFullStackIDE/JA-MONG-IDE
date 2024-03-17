@@ -5,7 +5,6 @@ import com.groom.demo.auth.util.CookieUtils;
 import com.groom.demo.config.AuthConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -21,7 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@Slf4j
+import static com.groom.demo.auth.Constants.FRONT_REDIRECT_URL;
+
+
 public class CustomOAuth2CookieAuthorizationRepository<T extends OAuth2AuthorizationRequest> implements AuthorizationRequestRepository {
 
     public static final String OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME = "oauth2_auth_request";
@@ -46,7 +47,8 @@ public class CustomOAuth2CookieAuthorizationRepository<T extends OAuth2Authoriza
     public void saveAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest, HttpServletRequest request, HttpServletResponse response) {
         CookieUtils.addCookie(response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME,
                 CookieUtils.serialize(authorizationRequest), cookieExpireSeconds);
-        CookieUtils.addCookie(response, REDIRECT_URI_PARAM_COOKIE_NAME, authConfig.getRedirectUrl(), cookieExpireSeconds);
+//        CookieUtils.addCookie(response, REDIRECT_URI_PARAM_COOKIE_NAME, authConfig.getRedirectUrl(), cookieExpireSeconds);
+        CookieUtils.addCookie(response, REDIRECT_URI_PARAM_COOKIE_NAME, FRONT_REDIRECT_URL, cookieExpireSeconds);
     }
 
 

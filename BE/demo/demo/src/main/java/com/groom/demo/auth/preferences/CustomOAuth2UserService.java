@@ -5,7 +5,6 @@ import com.groom.demo.auth.jwt.CustomAuthenticatedUser;
 import com.groom.demo.auth.oauth.CustomOAuth2User;
 import com.groom.demo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -18,7 +17,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import java.util.Collections;
 import java.util.Map;
 
-@Slf4j
+
 @RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
@@ -26,7 +25,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-
         //토큰을 통해 리소스 서버에서 유저 정보를 가져온다.
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
@@ -38,13 +36,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                         .getUserNameAttributeName());
 
         //db에 존재하지 않는 유저에 대해 -> failure handler로 보낸다.
-        log.error("getRegistrationId : {}",customOAuth2User.getRegistrationId());
         Long userSequence = memberRepository
-                .selectMemeberBySocialId(customOAuth2User.getRegistrationId(),
-                        customOAuth2User.getSocialId())
-                .orElseThrow(() -> {
-                    throw new OAuth2LoginException(HttpStatus.UNAUTHORIZED, customOAuth2User);
-                });
+                .selectMemberBySocialId(customOAuth2User.getRegistrationId(),
+                        customOAuth2User.getSocialId()).orElseThrow(() -> new OAuth2LoginException(HttpStatus.UNAUTHORIZED, customOAuth2User));
 
         //db에 존재하는 유저라면 CustomAuthenticatedUser 인증 객체를 만든다.
         CustomAuthenticatedUser customAuthenticatedUser = new CustomAuthenticatedUser(

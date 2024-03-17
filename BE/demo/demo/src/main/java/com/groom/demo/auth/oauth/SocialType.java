@@ -3,6 +3,7 @@ public enum SocialType {
     KAKAO("kakao"),
     GOOGLE("google"),
     NAVER("naver"),
+    Github("github"),
     NORMAL("normal");
 
     private final String label;

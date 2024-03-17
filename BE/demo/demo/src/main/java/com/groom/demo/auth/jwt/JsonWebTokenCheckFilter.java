@@ -1,6 +1,5 @@
 package com.groom.demo.auth.jwt;
 
-import com.groom.demo.auth.Constants;
 import com.groom.demo.auth.exception.ErrorResponse;
 import com.groom.demo.auth.util.JwtTokenUtils;
 import com.groom.demo.member.repository.MemberRepository;
@@ -10,11 +9,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -32,7 +29,7 @@ public class JsonWebTokenCheckFilter extends OncePerRequestFilter {
     private final JsonWebTokenProvider jsonWebTokenProvider;
     private final MemberRepository memberRepository;
 
-    private String excludeUrl = Constants.BASE_URI + "/**";
+//    private String excludeUrl = Constants.BASE_URI + "/**";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -66,11 +63,12 @@ public class JsonWebTokenCheckFilter extends OncePerRequestFilter {
                 Long userSequenceValue = Long.parseLong(userSequence);
                 if (null == userSequence) throw new ErrorResponse(HttpStatus.FORBIDDEN, "잘못된 Refresh 토큰 입니다. 1");
 
-                String dbToken = memberRepository.selectTokenByMemberNo(userSequenceValue).orElseThrow(() -> new ErrorResponse(HttpStatus.CONFLICT, "저장된 유저가 아닙니다."));
+                String dbToken = memberRepository.selectTokenByMemberNo(userSequenceValue)
+                        .orElseThrow(() -> new ErrorResponse(HttpStatus.CONFLICT, "저장된 유저가 아닙니다."));
 
                 if (dbToken.equals(refresh)) {
                     String newAccessToken = JwtTokenUtils.changeAccessToken(userSequenceValue, "ROLE_USER");
-//                    User user = userRepository.findBySequence(userSequenceValue);
+                    // User user = userRepository.findBySequence(userSequenceValue);
 
 
                     Cookie acessCookie = new Cookie("Access", newAccessToken);
