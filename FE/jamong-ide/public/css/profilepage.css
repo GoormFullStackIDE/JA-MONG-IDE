@@ -119,7 +119,6 @@ li,ul{list-style: none;}
 
   /* 탈퇴 팝업창 */
   .pop_yes, .pop_no{
-    background-color: #FFAE8C;
     color: #333;
     border: none;
     border-radius: 5px;
@@ -129,4 +128,9 @@ li,ul{list-style: none;}
     position: relative;
     top: 100px;
   }
-  
+  .pop_yes{
+    background-color: #FFE2D6;
+  }
+  .pop_no{
+    background-color: #FFAE8C;
+  }
