@@ -15,6 +15,8 @@ public class MemberSignUpRequestDTO {
     @NotBlank
     private String memberPass;
     private String memberPhone;
-    private String memberAdress;
+    private String memberAddress;
+    private String memberAddressDetail;
+    private String memberZip;
 
 }
