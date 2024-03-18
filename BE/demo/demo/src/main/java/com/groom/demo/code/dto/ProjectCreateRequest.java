@@ -6,7 +6,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ProjectCreateRequest {
-    private String imageName;
+    private String Name;
     private String language;
     private String owner;
 

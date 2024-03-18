@@ -1,4 +1,6 @@
 package com.groom.demo.code.controller;
+import com.groom.demo.code.dto.ProjectCreateResponse;
+import com.groom.demo.code.repository.ProjectRepository;
 import org.springframework.http.HttpStatus;
 import com.groom.demo.code.service.ProjectService;
 import org.springframework.http.ResponseEntity;
@@ -9,24 +11,28 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/jamong")
 public class ProjectController {
+    @Autowired
     private final ProjectService projectService;
     @Autowired
     public ProjectController(ProjectService projectService) {
         this.projectService = projectService;
     }
-
+    @Autowired
+    private ProjectRepository projectRepository;
     @PostMapping("/create")
-    public ResponseEntity<String> createContainer(@RequestBody ProjectCreateRequest request) {
-        String imageName = request.getImageName();
+    public ResponseEntity<ProjectCreateResponse> createContainer(@RequestBody ProjectCreateRequest request) {
+        String Name = request.getName();
         String language = request.getLanguage();
         String owner = request.getOwner();
-        String containerId = projectService.createContainer(imageName, language, owner);
+        String containerId = projectService.createContainer( Name,language,owner);
         if (containerId != null && !containerId.isEmpty()) {
-            return ResponseEntity.ok("Container created successfully. ID: " + containerId);
+            ProjectCreateResponse response = new ProjectCreateResponse(containerId, "Container created successfully.");
+            return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create container.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ProjectCreateResponse(null, "Failed to create container."));
         }
     }
+
 
     @DeleteMapping("/remove/{containerId}")
     public ResponseEntity<String> removeContainer(@PathVariable String containerId) {
