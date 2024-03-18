@@ -15,8 +15,18 @@ function LoginPage() {
           <input className="input_login_00" placeholder="비밀번호"></input>
           <button className="login_button_01 button_gradient">로그인</button>
           <div className="login_button_box_01">
-            <button className="login_button_02">아이디 찾기</button>
-            <button className="login_button_02">비밀번호 찾기</button>
+            <button
+              className="login_button_02"
+              onClick={() => navigate('/findid')}
+            >
+              아이디 찾기
+            </button>
+            <button
+              className="login_button_02"
+              onClick={() => navigate('/FindPasswordPage')}
+            >
+              비밀번호 찾기
+            </button>
             <button className="login_button_02"></button>
             <button
               className="login_button_02"

@@ -9,10 +9,11 @@ img {
 }
 .check {
   width: 3vh;
-  position: absolute;
-  margin: 5px;
-  padding: 5px;
+  position: relative;
+  margin: 0px -35px 0px 12px;
+  transform: translate(0%, 30%);
 }
+
 .logo_img_box {
   display: flex;
   align-items: center;
@@ -75,7 +76,7 @@ img {
   height: 100%;
 }
 .join_box_04 {
-  padding: 0 10px 10px 10px;
+  padding: 0 25px 10px 10px;
   text-align: end;
 }
 
@@ -169,39 +170,36 @@ img {
 
 .find_box {
   margin: 10px;
-  padding: 20px 0px;
+  padding: 30px 0px;
   width: 80vh;
-  height: 80vh;
+  height: 62vh;
   display: inline;
   background-color: #ffebe5;
   border-radius: 4px;
-  max-height: 630px;
+  max-height: 500px;
   min-width: 70vh;
   text-align: center;
 }
 
 .find_box_01 {
-  margin: 10px;
-  padding: 20px 0px;
-  width: 80vh;
-  height: 80vh;
-  display: inline;
-  background-color: #ffebe5;
-  border-radius: 4px;
-  max-height: 630px;
-  min-width: 70vh;
-  text-align: center;
+  min-width: 30vh;
+  padding: 40px 60px 40px 60px;
 }
 
 .find_box_02 {
+  min-width: 30vh;
+  padding: 40px 60px 40px 60px;
+}
+
+.find_box_04 {
   margin: 10px;
-  padding: 20px 0px;
+  padding: 30px 0px;
   width: 80vh;
-  height: 80vh;
+  height: 70vh;
   display: inline;
   background-color: #ffebe5;
   border-radius: 4px;
-  max-height: 630px;
+  max-height: 520px;
   min-width: 70vh;
   text-align: center;
 }

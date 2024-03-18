@@ -9,11 +9,24 @@ import MuiDrawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
+} from '@mui/material';
+import { showAlert, closeRedirectAlert } from '../common/confirmAlert.js';
 
 function Layout() {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
+  const alert = useSelector((state) => state.alert);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const drawerWidth = 230;
 
@@ -46,6 +59,25 @@ function Layout() {
       }),
     },
   }));
+
+  function alertClose() {
+    const payload = {
+      open: false,
+    };
+    return dispatch(showAlert(payload));
+  }
+
+  function redirectClose() {
+    console.log(alert.path);
+    navigate(alert.path);
+    dispatch(closeRedirectAlert());
+  }
+
+  function redirectClose() {
+    console.log(alert.path);
+    navigate(alert.path);
+    dispatch(closeRedirectAlert());
+  }
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -111,6 +143,30 @@ function Layout() {
           <Router />
         </div>
       </Box>
+      <Dialog
+        open={alert.open}
+        onClose={alertClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        // PaperComponent={{ backgroundColor: '#FFF7F4' }}
+        // classes={{ backgroundColor: '#FFF7F4' }}
+      >
+        <DialogTitle id="alert-dialog-title">{alert.title}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {alert.text}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={alert.path !== '' ? redirectClose : alertClose}
+            autoFocus
+          >
+            {' '}
+            확인
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

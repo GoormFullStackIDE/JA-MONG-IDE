@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Config from '../common/config';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { showAlert } from '../common/confirmAlert';
 
 const initMemberInfo = {
   name: '',
@@ -19,7 +21,11 @@ export default function Step2() {
   const [memberInfo, setMemberInfo] = useState(initMemberInfo);
   const [emailRegex, setEmailRegex] = useState(false);
   const [isValidEmail, setIsValidEmail] = useState(true); //중복이면 false
+  const [isPasswordRegex, setIsPasswordRegex] = useState(''); //정규식 틀리면 false
   const [isPassword, setIsPassword] = useState(false);
+  const [authPhoneNumber, setAuthPhoneNumber] = useState('');
+  const [isAuthentication, setIsAuthentication] = useState(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   function memberChanged(a, e) {
@@ -44,11 +50,28 @@ export default function Step2() {
     const reg = regex.test(email);
     setEmailRegex(reg);
 
-    // const validity = await axios.get(
-    //   encodeURI(Config.API_SERVER + '/jamong/member/idcheck' + email)
-    // );
-    // setIsValidEmail(validity.data);
-    // console.log(isValidEmail);
+    const validity = await axios.get(
+      encodeURI(Config.API_SERVER + 'jamong/member/idcheck?memberId=' + email)
+    );
+    setIsValidEmail(validity.data);
+    // setIsValidEmail(false);
+    console.log(validity.data);
+    console.log(isValidEmail);
+  }
+
+  function checkPassword(password) {
+    const regex =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@!%*#?&])[A-Za-z\d@!%*#?&]{8,}$/;
+    const test = regex.test(password);
+    setIsPasswordRegex(test);
+  }
+
+  function authNumberClick() {
+    if (authPhoneNumber == memberInfo['authenticationNumber']) {
+      setIsAuthentication(true);
+    } else {
+      setIsAuthentication(false);
+    }
   }
 
   /* eslint no-undef:"off" */
@@ -81,8 +104,79 @@ export default function Step2() {
       }).open();
     }
   }
-  function save() {
-    navigate('/login');
+
+  async function phoneClick() {
+    const validity = await axios({
+      method: 'post',
+      url: encodeURI(Config.API_SERVER + 'jamong/member/signup/phone'),
+      data: { memberPhone: memberInfo['phone'] },
+    });
+    console.log(validity);
+    setAuthPhoneNumber(validity.data);
+  }
+
+  const blankText = () => {
+    if (memberInfo['name'] === '') {
+      return '이름을 작성해 주시기 바랍니다.';
+    }
+    if (memberInfo['email'] === '') {
+      return '이메일이 유효하지 않습니다.';
+    }
+    if (memberInfo['password'] === '') {
+      return '비밀번호를 입력해 주시기 바랍니다.';
+    }
+    if (isPasswordRegex === false) {
+      return '비밀번호가 유효하지 않습니다.';
+    }
+    if (memberInfo['passwordConfirm'] !== memberInfo['password']) {
+      return '비밀번호 확인이 틀립니다.';
+    }
+    if (memberInfo['address'] === '주소') {
+      return '주소를 입력해 주시기 바랍니다.';
+    }
+    if (memberInfo['detail_address'] === '주소') {
+      return '상세주소를 입력해 주시기 바랍니다.';
+    }
+    if (isAuthentication === false) {
+      return '휴대폰 인증을 완료해주시기 바랍니다.';
+    }
+    return 'complete';
+  };
+
+  async function save() {
+    let textBox = blankText();
+    if (textBox !== 'complete') {
+      const payload = {
+        text: textBox,
+        open: true,
+      };
+      return dispatch(showAlert(payload));
+    }
+
+    const sandData = {
+      memberIdMail: memberInfo['email'],
+      memberName: memberInfo['name'],
+      memberPass: memberInfo['password'],
+      memberPhone: memberInfo['phone'],
+      memberAdress: memberInfo['address'],
+      memberAdressZip: memberInfo['zip'],
+      memberAdressDetail: memberInfo['detail_address'],
+    };
+
+    const memberId = await axios({
+      method: 'post',
+      url: encodeURI(Config.API_SERVER + 'jamong/member/signup'),
+      data: sandData,
+    });
+
+    if (memberId.data == 'Success') {
+      const payload = {
+        text: '회원가입이 완료되었습니다.',
+        open: true,
+        path: '/login',
+      };
+      dispatch(showAlert(payload));
+    }
   }
 
   return (
@@ -111,7 +205,7 @@ export default function Step2() {
         ></input>
         {memberInfo['email'] === '' ? (
           <></>
-        ) : emailRegex ? (
+        ) : emailRegex && isValidEmail ? (
           <img className="check" src="/images/checked.png" alt="checked" />
         ) : (
           <img className="check" src="/images/cancel.png" alt="cancel" />
@@ -123,9 +217,19 @@ export default function Step2() {
           name="password"
           id="password"
           value={memberInfo['password']}
-          onChange={(e) => memberChanged('password', e)}
+          onChange={(e) => {
+            memberChanged('password', e);
+            checkPassword(e.target.value);
+          }}
           maxLength="16"
         ></input>
+        {memberInfo['password'] === '' ? (
+          <></>
+        ) : isPasswordRegex ? (
+          <img className="check" src="/images/checked.png" alt="checked" />
+        ) : (
+          <img className="check" src="/images/cancel.png" alt="cancel" />
+        )}
         <input
           type="password"
           className="input_00"
@@ -146,6 +250,7 @@ export default function Step2() {
         ) : (
           <img className="check" src="/images/cancel.png" alt="cancel" />
         )}
+
         <div className="join_box_02">
           <input
             className="input_01"
@@ -180,10 +285,13 @@ export default function Step2() {
             placeholder="휴대번호"
             id="phone"
             name="phone"
-            defaultValue={memberInfo['phone'].replace(/[^0-9]/g, '')}
-            maxLength="49"
+            value={memberInfo['phone'].replace(/[^0-9]/g, '')}
+            maxLength="11"
+            onChange={(e) => memberChanged('phone', e)}
           ></input>
-          <button className="button_02">인증</button>
+          <button className="button_02" onClick={() => phoneClick()}>
+            인증
+          </button>
         </div>
         <div className="join_box_02">
           <input
@@ -195,7 +303,9 @@ export default function Step2() {
             onChange={(e) => memberChanged('authenticationNumber', e)}
             maxLength="30"
           ></input>
-          <button className="button_02">확인</button>
+          <button className="button_02" onClick={() => authNumberClick()}>
+            확인
+          </button>
         </div>
       </div>
       <div className="button_box ">
