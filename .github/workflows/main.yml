@@ -1,45 +1,40 @@
-name: CI
+name: Deploy on Push
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  build-and-test:
+  deploy-frontend:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    
-    # 자바 설정 업데이트
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin' # Eclipse Temurin은 AdoptOpenJDK의 후속 버전입니다.
-        
-    - name: Build and Test Spring Application
-      run: |
-        cd backend # 백엔드 프로젝트 폴더로 이동
-        ./mvnw clean install # Maven을 사용해 빌드 및 테스트 실행
-        
-    # Node.js 설정 업데이트
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20'
-        
-    - name: Install dependencies
-      run: |
-        cd frontend # 프론트엔드 프로젝트 폴더로 이동
-        npm install
-        
-    - name: Run tests
-      run: |
-        npm test
-        
-    - name: Build React App
-      run: |
-        npm run build
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Deploy Frontend to S3
+        uses: jakejarvis/s3-sync-action@v4
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          SOURCE_DIR: "frontend/dist" # 프론트엔드 빌드 결과가 있는 디렉토리로 수정
+
+  deploy-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install SSH key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy Backend to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no ec2-user@jamongide.kro.kr 'cd /app && git pull origin main && ./deploy.sh'
