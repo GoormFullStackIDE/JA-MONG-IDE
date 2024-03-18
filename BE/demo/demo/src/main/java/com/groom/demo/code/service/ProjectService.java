@@ -23,7 +23,7 @@ public class ProjectService {
 
 
 
-    public String createContainer(String Name, String language, String owner) {
+    public String createContainer(String name, String language, String owner) {
 
         // 언어에 따라 실행할 이미지 선택
         String imageName = switch (language) {
@@ -40,24 +40,15 @@ public class ProjectService {
         Map<String, String> labels = new HashMap<>();
         labels.put("language", language);
         labels.put("owner", owner);
-
+        labels.put("Name", name);
         // Docker 클라이언트를 사용하여 컨테이너 생성
         CreateContainerCmd createContainerCmd = dockerClient.createContainerCmd(imageName)
                 .withLabels(labels); // language와 owner 정보 추가
-
-        String containerId = createContainerCmd.exec().getId();
-        Project project = new Project();
-        project.setContainerID(containerId);
-        project.setLanguage(language);
-        project.setUser(owner);
-        projectRepository.save(project);
-
-        return containerId;
+        return createContainerCmd.exec().getId();
     }
     public boolean removeContainer(String containerId) {
         RemoveContainerCmd removeContainerCmd = dockerClient.removeContainerCmd(containerId);
         removeContainerCmd.exec();
-        projectRepository.deleteByContainerID(containerId);
         return true;
     }
 }
