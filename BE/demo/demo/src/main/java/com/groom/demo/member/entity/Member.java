@@ -38,8 +38,14 @@ public class Member {
     @Column(name = "member_phone", length = 100, nullable = false)
     private String memberPhone;
 
-    @Column(name = "member_adress", length = 400)
-    private String memberAdress;
+    @Column(name = "member_address", length = 400)
+    private String memberAddress;
+
+    @Column(name = "member_address_detail", length = 400)
+    private String memberAddressDetail;
+
+    @Column(name = "member_zip", length = 400)
+    private String memberZip;
 
     @Column(name = "member_file", length = 3000)
     private String memberFile;
@@ -93,7 +99,11 @@ public class Member {
         this.memberPhone = memberModifyDTO.getMemberPhone();
 
         if (memberModifyDTO.getMemberAddress() != null) {
-            this.memberAdress = memberModifyDTO.getMemberAddress();
+            this.memberAddress = memberModifyDTO.getMemberAddress();
+        }if (memberModifyDTO.getMemberAddressDetail()!= null) {
+            this.memberAddressDetail = memberModifyDTO.getMemberAddressDetail();
+        }if (memberModifyDTO.getMemberAddressZip() != null) {
+            this.memberZip = memberModifyDTO.getMemberAddressZip();
         }
 
         this.memberDate = LocalDateTime.now();

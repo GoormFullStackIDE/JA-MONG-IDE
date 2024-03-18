@@ -26,7 +26,9 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                                 member.memberIdEmail,
                                 member.memberName,
                                 member.memberPhone,
-                                member.memberAdress,
+                                member.memberAddress,
+                                member.memberAddressDetail,
+                                member.memberZip,
                                 member.memberFile,
                                 member.memberDate,
                                 member.memberLastLogin)
