@@ -11,5 +11,7 @@ public class MemberModifyDTO implements Serializable {
     private String memberPass;
     private String memberPhone;
     private String memberAddress;
+    private String memberAddressDetail;
+    private String memberAddressZip;
     private MultipartFile memberFile;
 }

@@ -18,6 +18,7 @@ import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
+import org.antlr.v4.runtime.misc.FlexibleHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -91,11 +94,13 @@ public class MemberController {
     // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody @Valid MemberSignUpRequestDTO memberSignUpRequestDTO) {
+        Map<String, String> responsebody = new HashMap<>();
+        responsebody.put("message", "Success");
         if (StringUtils.isBlank(memberSignUpRequestDTO.getMemberIdMail())) {
             return new ResponseEntity<>("이메일을 확인해주세요.", HttpStatus.BAD_REQUEST);
         }
         memberService.memberSignUp(memberSignUpRequestDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(responsebody, HttpStatus.OK);
     }
 
     // 회원가입시 ID 중복검사
@@ -116,6 +121,8 @@ public class MemberController {
     // 일반 로그인
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid MemberloginDTO memberloginDTO) {
+        Map<String, String> responsebody = new HashMap<>();
+        responsebody.put("message", "Success");
         Long normalLogin = memberService.memberLogin(memberloginDTO.getMemberIdEmail(), memberloginDTO.getMemberPass());
 
         if (normalLogin == null) {
@@ -124,16 +131,18 @@ public class MemberController {
             JsonWebToken jsonWebToken = JwtTokenUtils.allocateToken(normalLogin, "ROLE_USER");
             MultiValueMap<String, String> headers = new HttpHeaders();
             headers.add("Authorization", jsonWebToken.getAccessToken());
-            return new ResponseEntity<>(headers, HttpStatus.OK);
+            return new ResponseEntity<>(responsebody, headers, HttpStatus.OK);
         }
     }
 
     // 회원탈퇴
     @DeleteMapping("/delete")
     public ResponseEntity<?> delete() {
+        Map<String, String> responsebody = new HashMap<>();
+        responsebody.put("message", "Success");
         Long deleteMemberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         Boolean memberisDelete = memberService.memberIsDelete(deleteMemberNo);
-        return new ResponseEntity<>(memberisDelete, HttpStatus.OK);
+        return new ResponseEntity<>(responsebody, HttpStatus.OK);
     }
 
     // 회원 아이디 검색(조회)시 이름과 함께 응답
@@ -153,6 +162,8 @@ public class MemberController {
     // PW 찾기
     @PostMapping("/pwfind")
     public ResponseEntity<?> pwfindMember(@RequestBody @Valid MemberPWFindDTO memberPWFindDTO) {
+        Map<String, String> responsebody = new HashMap<>();
+        responsebody.put("message", "Success");
         String temporaryPW = memberService.temporaryPW(
                 memberPWFindDTO.getMemberIdMail(),
                 memberPWFindDTO.getMemberName(),
@@ -192,13 +203,15 @@ public class MemberController {
                         temporaryPW);
 
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(responsebody, HttpStatus.OK);
     }
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
     // 프로필편집 - 이미지 등록
     @PutMapping("/modify")
     public ResponseEntity<?> modifyProfile(@ModelAttribute MemberModifyDTO memberModifyDTO) {
+        Map<String, String> responsebody = new HashMap<>();
+        responsebody.put("message", "Success");
         Long modifyMemberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         String name = memberModifyDTO.getMemberName();
         String phone = memberModifyDTO.getMemberPhone();
@@ -215,7 +228,7 @@ public class MemberController {
                 uploadIMG = s3UploadService.upload(memberModifyDTO.getMemberFile(), "jamongProfile");
             }
             memberService.memberProfileModify(memberModifyDTO, modifyMemberNo, uploadIMG);
-            return new ResponseEntity<>(uploadIMG, HttpStatus.OK);
+            return new ResponseEntity<>(responsebody, HttpStatus.OK);
         } else {
             return new ResponseEntity<>("직전에 사용했던 비밀번호로는 수정할 수 없습니다.", HttpStatus.BAD_REQUEST);
 
