@@ -2,28 +2,33 @@ import React, { useState } from "react";
 
 const ProfilePage = () => {
   const [popupVisible, setPopupVisible] = useState(false);
+  const [confirmationVisible, setConfirmationVisible] = useState(false);
+  const [infoChangePopupVisible, setInfoChangePopupVisible] = useState(false);
 
   const handleImageSelect = () => {
-    console.log("이미지 선택 버튼 클릭됨");
-    // 이미지 선택 버튼이 클릭되었을 때 수행할 동작 추가
   };
 
   const handleConfirm = () => {
-    console.log("확인 버튼 클릭됨");
-    // 확인 버튼이 클릭되었을 때 수행할 동작 추가
   };
 
   const handleAuthentication = () => {
-    console.log("인증 버튼 클릭됨");
-    // 인증 버튼이 클릭되었을 때 수행할 동작 추가
   };
 
+  const handleWithdrawal = () => {
+    setConfirmationVisible(true); // 회원탈퇴 팝업 열기
+  };
   const handleInfoChange = () => {
-    setPopupVisible(true); 
+    setInfoChangePopupVisible(true); // 정보 변경 팝업
+  };
+
+  const handleConfirmYes = () => {
+    setConfirmationVisible(false);
+    setPopupVisible(true);
   };
 
   const handleClosePopup = () => {
     setPopupVisible(false); 
+    setInfoChangePopupVisible(false);
   };
 
   return (
@@ -47,13 +52,33 @@ const ProfilePage = () => {
           </li>
         </ul>
       </div>
-        <div className="info_change">
-          <button onClick={handleInfoChange}>정보 변경</button>
+        <div className="member_info">
+          <button className="m_change" onClick={handleInfoChange}>정보 변경</button>
+          <button className="m_cancel" onClick={handleWithdrawal}>회원 탈퇴</button>
         </div>
+        {confirmationVisible && (
+          <div className="popup">
+          <div className="popup_content">
+            <p> 자몽 IDE에서 탈퇴하시겠습니까?</p>
+            <button className="pop_yes" onClick={handleConfirmYes}>확인</button>
+            <button className="pop_no" onClick={() => setConfirmationVisible(false)}>취소</button>
+          </div>
+        </div>
+        )}
+        {infoChangePopupVisible && (
+          <div className="popup">
+            <div className="popup_content">
+              <p>개인정보 변경이 완료되었습니다.</p>
+              <button className="pop_ok" onClick={handleClosePopup}>확인</button>
+              <button className="pop_close" onClick={handleClosePopup}>X</button>
+
+            </div>
+          </div>
+        )}
         {popupVisible && (
         <div className="popup">
           <div className="popup_content">
-          <p>개인정보 변경이 완료되었습니다!</p>
+          <p>회원탈퇴가 완료되었습니다.</p>
           <button className="pop_ok" onClick={handleClosePopup}>확인</button>
           <button className="pop_close" onClick={handleClosePopup}>X</button>
           </div>

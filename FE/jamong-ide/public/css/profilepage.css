@@ -52,19 +52,28 @@ li,ul{list-style: none;}
     border-radius: 5px;
     cursor: pointer;
 }
-.info_change {
+.member_info {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: -90px;
   }
-  .info_change>button{
-    background: #FFAE8C;
+  .member_info>button{
     border: none;
-    height: 50px; width: 400px;
     color: #333;
-    border-radius: 10px;
     cursor: pointer;
+  }
+  .m_change{
+    height: 50px; width: 300px;
+    background: #FFAE8C;
+    border-radius: 10px;
+    margin-left: 70px;
+  }
+  .m_cancel{
+    float: left;
+    background: none;
+    text-decoration: underline;
+    margin-left: 180px;
   }
 
   /* 팝업창 */
@@ -89,6 +98,7 @@ li,ul{list-style: none;}
     position: relative;
     top: 100px;
     left: 10px;
+    cursor: pointer;
   }
   .popup_content {
     text-align: center;
@@ -105,5 +115,18 @@ li,ul{list-style: none;}
     top: 10px;
     right: 20px;
     font-size: 25px;
+  }
+
+  /* 탈퇴 팝업창 */
+  .pop_yes, .pop_no{
+    background-color: #FFAE8C;
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100px; height: 40px;
+    margin-right: 10px;
+    position: relative;
+    top: 100px;
   }
   
