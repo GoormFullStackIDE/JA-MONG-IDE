@@ -1,11 +1,13 @@
 package com.groom.demo.code.entity;
 
+import com.groom.demo.member.entity.ProjectMember;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.*;
+
 
 @Getter@Setter
 @Entity
@@ -25,7 +27,8 @@ public class Project {
     @Column(name = "language", length = 30)
     private String language;
 
-//    @OneToMany(mappedBy = "project")
-//    private List<Project_Member> members = new ArrayList<>();
+    @OneToMany(mappedBy = "project")
+    private List<ProjectMember> members = new ArrayList<>();
+
 }
 
