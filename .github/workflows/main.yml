@@ -13,6 +13,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      - name: Build React Frontend
+        run: yarn build
+        
       - name: Deploy Frontend to S3
         uses: jakejarvis/s3-sync-action@v4
         with:
@@ -21,7 +24,7 @@ jobs:
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          SOURCE_DIR: "frontend/dist" # 프론트엔드 빌드 결과가 있는 디렉토리로 수정
+          SOURCE_DIR: "build" # 프론트엔드 빌드 결과가 있는 디렉토리로 수정
 
   deploy-backend:
     runs-on: ubuntu-latest
