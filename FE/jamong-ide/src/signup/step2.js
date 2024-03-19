@@ -28,9 +28,9 @@ export default function Step2() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  function memberChanged(a, e) {
+  function memberChanged(infoName, e) {
     const member = { ...memberInfo };
-    member[a] = e.target.value;
+    member[infoName] = e.target.value;
     setMemberInfo(member);
   }
   console.log(memberInfo);
@@ -69,8 +69,18 @@ export default function Step2() {
   function authNumberClick() {
     if (authPhoneNumber == memberInfo['authenticationNumber']) {
       setIsAuthentication(true);
+      const payload = {
+        text: '휴대번호 인증이 완료되었습니다.',
+        open: true,
+      };
+      return dispatch(showAlert(payload));
     } else {
       setIsAuthentication(false);
+      const payload = {
+        text: '인증번호가 틀립니다.',
+        open: true,
+      };
+      return dispatch(showAlert(payload));
     }
   }
 
@@ -113,6 +123,11 @@ export default function Step2() {
     });
     console.log(validity);
     setAuthPhoneNumber(validity.data);
+    const payload = {
+      text: '인증번호가 발송되었습니다.',
+      open: true,
+    };
+    return dispatch(showAlert(payload));
   }
 
   const blankText = () => {
@@ -158,9 +173,9 @@ export default function Step2() {
       memberName: memberInfo['name'],
       memberPass: memberInfo['password'],
       memberPhone: memberInfo['phone'],
-      memberAdress: memberInfo['address'],
-      memberAdressZip: memberInfo['zip'],
-      memberAdressDetail: memberInfo['detail_address'],
+      memberAddress: memberInfo['address'],
+      memberZip: memberInfo['zip'],
+      memberAddressDetail: memberInfo['detail_address'],
     };
 
     const memberId = await axios({
@@ -169,9 +184,16 @@ export default function Step2() {
       data: sandData,
     });
 
-    if (memberId.data == 'Success') {
+    if (memberId.data.message == 'Success') {
       const payload = {
         text: '회원가입이 완료되었습니다.',
+        open: true,
+        path: '/login',
+      };
+      dispatch(showAlert(payload));
+    } else {
+      const payload = {
+        text: '회원가입 중 오류가 발생하였습니다.\n 잠시 후 다시 시도해 주시기 바랍니다.',
         open: true,
         path: '/login',
       };
