@@ -26,8 +26,7 @@ public class ProjectServiceImpl implements ProjectService {
         this.projectRepository = projectRepository;
 
         // AWS 자격 증명 설정
-        String accessKey = "AKIAW3MEAFFEFLTEEOWN";
-        String secretKey = "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";
+        
         BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
         AWSStaticCredentialsProvider credentialsProvider = new AWSStaticCredentialsProvider(awsCredentials);
 
