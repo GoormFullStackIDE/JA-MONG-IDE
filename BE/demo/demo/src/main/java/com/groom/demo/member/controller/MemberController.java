@@ -131,6 +131,8 @@ public class MemberController {
             JsonWebToken jsonWebToken = JwtTokenUtils.allocateToken(normalLogin, "ROLE_USER");
             MultiValueMap<String, String> headers = new HttpHeaders();
             headers.add("Authorization", jsonWebToken.getAccessToken());
+            // 리프레시 토큰을 넣어준다. 해당 member_Token에 넣자!
+            memberService.normalLoginRefreshToken(normalLogin, jsonWebToken.getRefreshToken());
             return new ResponseEntity<>(responsebody, headers, HttpStatus.OK);
         }
     }
@@ -235,5 +237,33 @@ public class MemberController {
         }
 
 
+    }
+
+        // Access Token 값 만료 되었을 경우 Refresh Token 전달 후 새로운 Access Token 생성
+        @PostMapping("/accesstoken")
+        public ResponseEntity<?> accessToken(@RequestBody SendRefreshRequestAccessDTO sendRefreshRequestAccessDTO){
+            Map<String, String> responsebody = new HashMap<>();
+            responsebody.put("message", "Success");
+            Long newAccessToken = memberService.isRefreshTokenAndIdOk(sendRefreshRequestAccessDTO);
+
+            if (newAccessToken == null){
+                return new ResponseEntity<>("잘못된 처리입니다. 다시 로그인 해주세요." ,HttpStatus.BAD_REQUEST);
+            }else{
+                JsonWebToken jsonWebToken = JwtTokenUtils.allocateToken(newAccessToken, "ROLE_USER");
+                MultiValueMap<String, String> headers = new HttpHeaders();
+                headers.add("Authorization", jsonWebToken.getAccessToken());
+
+                return new ResponseEntity<>(responsebody, headers, HttpStatus.OK);
+            }
+        }
+
+    // 컨테이너 초대
+    @PostMapping("/join")
+    public ResponseEntity<?> joinOthers(@RequestBody ProjectJoinOthersDTO projectJoinOthersDTO){
+        Map<String, String> responsebody = new HashMap<>();
+        responsebody.put("message", "Success");
+        memberService.othersJoin(projectJoinOthersDTO);
+
+        return new ResponseEntity<>(responsebody, HttpStatus.OK);
     }
 }
