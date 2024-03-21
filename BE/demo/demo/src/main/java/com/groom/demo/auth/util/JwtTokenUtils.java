@@ -26,8 +26,8 @@ public class JwtTokenUtils {
 //    // access 토큰 1시간 실제
 //    public static final long ACCESS_PERIOD = 1000L * 60L * 60L * 1L;
 
-    // access 토큰 5일 개발용
-    public static final long ACCESS_PERIOD = 1000L * 60L * 60L * 24L * 14L;
+    // access 토큰 1시간
+    public static final long ACCESS_PERIOD = 1000L * 60L * 60L;
 
     // refresh 토큰 보통 2주
 //    public static final long REFRESH_PERIOD = 1000L * 60L * 60L * 24L * 2L;
