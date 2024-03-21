@@ -26,7 +26,7 @@ public class Project {
     private String language;
 
     @OneToMany(mappedBy = "projectNo")
-    private List<ProjectMember> members = new ArrayList<>();
+    private List<ProjectMember> memberNo2 = new ArrayList<>();
 
 }
 

@@ -69,21 +69,21 @@ public class ProjectServiceImpl implements ProjectService {
             project.setLanguage(language);
             project.setDate(LocalDateTime.now());
 
-            projectRepository.save(project);
-            projectRepository.findById(project.getProject_no()).ifPresent(savedProject
-                    -> addProjectMember(savedProject.getProject_no(), owner, true));
+//            projectRepository.save(project);
+//            projectRepository.findById(project.getProject_no()).ifPresent(savedProject
+//                    -> addProjectMember(savedProject.getProject_no(), owner, true));
         }
 
         return containerId;
     }
-    private void addProjectMember(Long projectId, String projectInviteMember, boolean projectLeader) {
-        ProjectMember projectMember = new ProjectMember();
-        projectMember.setproject(projectId);
-        projectMember.setprojectInviteMember(projectInviteMember);
-        projectMember.setprojectLeader(projectLeader);
-
-        project.getMembers().add(projectMember);
-    }
+//    private void addProjectMember(Long projectId, String projectInviteMember, boolean projectLeader) {
+//        ProjectMember projectMember = new ProjectMember();
+//        projectMember.setproject(projectId);
+//        projectMember.setprojectInviteMember(projectInviteMember);
+//        projectMember.setprojectLeader(projectLeader);
+//
+//        project.getMembers().add(projectMember);
+//    }
     @Override
     public boolean removeContainer(String containerId) {
         // ECS에서 작업 중지
@@ -93,6 +93,11 @@ public class ProjectServiceImpl implements ProjectService {
         projectRepository.deleteByContainerID(containerId);
 
         return true;
+    }
+
+    @Override
+    public List<Project> getContainersByMember(String username) {
+        return null;
     }
 
 
