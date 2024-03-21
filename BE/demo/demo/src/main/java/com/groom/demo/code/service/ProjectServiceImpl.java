@@ -27,14 +27,14 @@ public class ProjectServiceImpl implements ProjectService {
 
         // AWS 자격 증명 설정
         
-        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
-        AWSStaticCredentialsProvider credentialsProvider = new AWSStaticCredentialsProvider(awsCredentials);
+//        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
+//        AWSStaticCredentialsProvider credentialsProvider = new AWSStaticCredentialsProvider(awsCredentials);
 
         // ECS 클라이언트 생성
-        this.ecsClient = AmazonECSClientBuilder.standard()
-                .withCredentials(credentialsProvider)
-                .withRegion("ap-northeast-2")
-                .build();
+//        this.ecsClient = AmazonECSClientBuilder.standard()
+//                .withCredentials(credentialsProvider)
+//                .withRegion("ap-northeast-2")
+//                .build();
     }
 
     @Override
