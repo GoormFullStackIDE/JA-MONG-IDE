@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 public class ProjectController {
-    @Autowired
+
     private final ProjectService projectService;
     @Autowired
     public ProjectController(ProjectService projectService) {
@@ -23,29 +23,6 @@ public class ProjectController {
     @Autowired
     private ProjectRepository projectRepository;
 
-
-//    @PostMapping("/create")
-//    public ResponseEntity<ProjectCreateResponse> createContainer(@RequestBody ProjectCreateRequest request) {
-//        String Name = request.getName();
-//        String language = request.getLanguage();
-//        String owner = request.getOwner();
-//        String containerId = projectService.createContainer( Name,language,owner);
-//        if (containerId != null && !containerId.isEmpty()) {
-//            Project project = new Project();
-//            project.setContainerID(containerId);
-//            project.setUser(owner); // 사용자 정보 설정, 필요에 따라 다른 필드도 설정 가능
-//            project.setLanguage(language); // 사용 언어 설정
-//            project.setDate(LocalDateTime.now()); // 현재 시간 설정
-//
-//            // 프로젝트 엔티티 저장
-//            projectRepository.save(project);
-//
-//            ProjectCreateResponse response = new ProjectCreateResponse(containerId, "Container created successfully.");
-//            return ResponseEntity.ok(response);
-//        } else {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ProjectCreateResponse(null, "Failed to create container."));
-//        }
-//    }
 
     @PostMapping("/create")
     public ResponseEntity<ProjectCreateResponse> createContainer(@RequestBody ProjectCreateRequest request) {

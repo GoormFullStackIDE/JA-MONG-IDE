@@ -1,52 +1,39 @@
 package com.groom.demo.code.service;
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.ecs.AmazonECS;
-import com.amazonaws.services.ecs.AmazonECSClientBuilder;
 import com.amazonaws.services.ecs.model.RunTaskRequest;
 import com.amazonaws.services.ecs.model.RunTaskResult;
+import com.amazonaws.services.ecs.model.StopTaskRequest;
 import com.groom.demo.code.entity.Project;
 import com.groom.demo.code.repository.ProjectRepository;
-import com.groom.demo.member.entity.ProjectMember;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 @Service
+@DependsOn("AWSConfig") // AWSConfig 빈이 먼저 초기화되도록 설정
 public class ProjectServiceImpl implements ProjectService {
 
     private final AmazonECS ecsClient;
     private final ProjectRepository projectRepository;
 
-    public ProjectServiceImpl(ProjectRepository projectRepository,
-                              @Value("${aws.accessKey}") String accessKey,
-                              @Value("${aws.secretKey}") String secretKey) {
+    @Autowired
+    public ProjectServiceImpl(ProjectRepository projectRepository, AmazonECS ecsClient) {
         this.projectRepository = projectRepository;
-
-        // AWS 자격 증명 설정
-        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
-        AWSStaticCredentialsProvider credentialsProvider = new AWSStaticCredentialsProvider(awsCredentials);
-
-        // ECS 클라이언트 생성
-        this.ecsClient = AmazonECSClientBuilder.standard()
-                .withCredentials(credentialsProvider)
-                .withRegion("ap-northeast-2")
-                .build();
+        this.ecsClient = ecsClient;
     }
 
     @Override
     public String createContainer(String name, String language, String owner) {
         // 도커 이미지 선택
         String imageName = switch (language) {
-            case "java" -> "java_image";
-            case "cpp" -> "cpp_image";
-            case "python" -> "python_image";
-            case "javascript" -> "javascript_image";
+            case "java" -> "java_compile_image";//
+            case "cpp" -> "cpp_compile_image";
+            case "python" -> "python_compile_image";
+            case "javascript" -> "javascript_compile_image";
             default -> "java_image";
         };
 
@@ -86,8 +73,8 @@ public class ProjectServiceImpl implements ProjectService {
 //    }
     @Override
     public boolean removeContainer(String containerId) {
-        // ECS에서 작업 중지
-        // ecsClient.stopTask(...);
+        StopTaskRequest stopTaskRequest = new StopTaskRequest().withTask(containerId);
+        ecsClient.stopTask(stopTaskRequest);
 
         // 프로젝트 정보 삭제
         projectRepository.deleteByContainerID(containerId);
