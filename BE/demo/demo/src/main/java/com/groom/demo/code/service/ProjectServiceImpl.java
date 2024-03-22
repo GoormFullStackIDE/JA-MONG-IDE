@@ -9,6 +9,7 @@ import com.amazonaws.services.ecs.model.RunTaskResult;
 import com.groom.demo.code.entity.Project;
 import com.groom.demo.code.repository.ProjectRepository;
 import com.groom.demo.member.entity.ProjectMember;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,19 +23,20 @@ public class ProjectServiceImpl implements ProjectService {
     private final AmazonECS ecsClient;
     private final ProjectRepository projectRepository;
 
-    public ProjectServiceImpl(ProjectRepository projectRepository) {
+    public ProjectServiceImpl(ProjectRepository projectRepository,
+                              @Value("${aws.accessKey}") String accessKey,
+                              @Value("${aws.secretKey}") String secretKey) {
         this.projectRepository = projectRepository;
 
         // AWS 자격 증명 설정
-        
-//        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
-//        AWSStaticCredentialsProvider credentialsProvider = new AWSStaticCredentialsProvider(awsCredentials);
+        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
+        AWSStaticCredentialsProvider credentialsProvider = new AWSStaticCredentialsProvider(awsCredentials);
 
         // ECS 클라이언트 생성
-//        this.ecsClient = AmazonECSClientBuilder.standard()
-//                .withCredentials(credentialsProvider)
-//                .withRegion("ap-northeast-2")
-//                .build();
+        this.ecsClient = AmazonECSClientBuilder.standard()
+                .withCredentials(credentialsProvider)
+                .withRegion("ap-northeast-2")
+                .build();
     }
 
     @Override
@@ -68,9 +70,8 @@ public class ProjectServiceImpl implements ProjectService {
             project.setLanguage(language);
             project.setDate(LocalDateTime.now());
 
-//            projectRepository.save(project);
-//            projectRepository.findById(project.getProject_no()).ifPresent(savedProject
-//                    -> addProjectMember(savedProject.getProject_no(), owner, true));
+            projectRepository.save(project);
+//            projectRepository.findById(project.getProject_no()).ifPresent(savedProject -> addProjectMember(savedProject.getProject_no(), owner, true));
         }
 
         return containerId;
