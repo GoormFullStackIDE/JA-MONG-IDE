@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Mainpage = () => {
+const Container = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedStack, setSelectedStack] = useState(''); // 드롭다운의 선택된 값의 상태
   const [containerName, setContainerName] = useState('');
@@ -118,4 +118,4 @@ const Mainpage = () => {
   );
 };
 
-export default Mainpage;
+export default Container;

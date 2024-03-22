@@ -137,6 +137,9 @@ export default function Step2() {
     if (memberInfo['email'] === '') {
       return '이메일이 유효하지 않습니다.';
     }
+    if (isValidEmail === false) {
+      return '중복된 아이디가 존재합니다. 다른 아이디를 사용해주세요.';
+    }
     if (memberInfo['password'] === '') {
       return '비밀번호를 입력해 주시기 바랍니다.';
     }

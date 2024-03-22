@@ -5,20 +5,20 @@ import SignUp from '../signup/signup';
 import LoginPage from '../login/login';
 import FindPasswordPage from '../find/findfassword';
 import FindIdPage from '../find/findid';
-import Mainpage from '../main/mainpage';
+import Container from '../main/container';
 
-// import ProfileEditPage from '../main/ProfileEditpage';
+import ProfilePage from '../component/profileEdit';
 
 export default function Router() {
   return (
     <Routes>
       <Route path="/" element={<Main />} />
-      <Route path="/mainpage" element={<Mainpage />} />
+      <Route path="/container" element={<Container />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/findpassword" element={<FindPasswordPage />} />
       <Route path="/findid" element={<FindIdPage />} />
-      {/* <Route path="/profile" element={<ProfileEditPage />} /> */}
+      <Route path="/profile" element={<ProfilePage />} />
     </Routes>
   );
 }

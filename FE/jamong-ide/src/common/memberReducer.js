@@ -1,23 +1,31 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initMemberInfo = {
-  token: '',
+  authenticated: false,
+  token: null,
+  expireTime: null,
 };
 
 export const memberInfoSlice = createSlice({
   name: 'member',
   initialState: { ...initMemberInfo },
   reducers: {
-    memberLogin: (state, action) => {
-      state = { ...action.payload };
+    Login: (state, action) => {
+      state = {
+        ...action.payload,
+        expireTime: new Date().getTime() + 1000 * 3600,
+      };
+      console.log(state);
+      // window.localStorage.setItem('member', JSON.stringify(state));
       return state;
     },
-    memberLogout: (state, action) => {
+    Logout: (state) => {
       state = { ...initMemberInfo };
+      // window.localStorage.setItem('member', JSON.stringify(state));
       return state;
     },
   },
 });
 
-export const { memberLogin, memberLogout } = memberInfoSlice.actions;
+export const { Login, Logout } = memberInfoSlice.actions;
 export default memberInfoSlice.reducer;

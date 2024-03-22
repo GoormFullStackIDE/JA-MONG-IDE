@@ -1,3 +1,4 @@
+/* 회원가입 */
 .button_box {
   width: 80vh;
   padding-top: 5px;
@@ -152,4 +153,14 @@
   color: #fff;
   transition: all ease-in-out 0.3s;
   size: 15;
+}
+
+/* 헤더 버튼 */
+.circle_avatar_btn {
+  margin-right: 3vh;
+  border-radius: 50%;
+  border-width: 0;
+  width: 51px;
+  height: 51px;
+  background-color: #fffdfb;
 }

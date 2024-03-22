@@ -1,34 +1,36 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ListItemButton from '@mui/material/ListItemButton';
-import { ListItemIcon, ListItemText } from '@mui/material';
-
+import { ListItemIcon, List } from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Avatar from '@mui/material/Avatar';
+import ListItem from '@mui/material/ListItem';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
 function MainListItems() {
   const [isSpaceListOpen, setIsSpaceListOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleSpaceList = () => {
     setIsSpaceListOpen(!isSpaceListOpen);
   };
 
+  const moveContainer = () => {};
   return (
     <div>
-      <Link to="/" style={{ color: 'black', textDecoration: 'none' }}>
-        <ListItemButton>
-          <ListItemIcon>
-            <div className="list_profile">
-              <p className="list_name">김이름</p>
-              <p className="list_email">example@mail.com</p>
-            </div>
-          </ListItemIcon>
-          <ListItemText primary="" />
-        </ListItemButton>
-      </Link>
-      <ListItemButton
-        onClick={toggleSpaceList}
-        style={{ display: 'flex', alignItems: 'center' }}
-      >
+      <div className="list_profile">
+        <Avatar
+          sx={{ mt: 1, width: 100, height: 100 }}
+          alt="jamong.png"
+          src="/images/jamong.png"
+        />
+        <p className="list_name">김이름</p>
+        <p className="list_email">sdfmple@mail.com</p>
+      </div>
+
+      <ListItemButton onClick={toggleSpaceList}>
         <div className="space">
-          <p>스페이스</p>
+          <p> 스페이스 </p>
           {isSpaceListOpen ? (
             <div className="arrow-up" />
           ) : (
@@ -38,15 +40,9 @@ function MainListItems() {
       </ListItemButton>
       {isSpaceListOpen && (
         <div className="space_list">
-          <h4 style={{ color: '#666666', textDecoration: 'none' }}>
-            모든 컨테이너
-          </h4>
-          <h4 style={{ color: '#666666', textDecoration: 'none' }}>
-            내 컨테이너
-          </h4>
-          <h4 style={{ color: '#666666', textDecoration: 'none' }}>
-            공유받은 컨테이너
-          </h4>
+          <button className="listbtn">모든 컨테이너</button>
+          <button className="listbtn">내 컨테이너</button>
+          <button className="listbtn">공유받은 컨테이너</button>
         </div>
       )}
     </div>
