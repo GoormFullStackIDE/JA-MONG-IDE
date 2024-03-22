@@ -1,9 +1,14 @@
 package com.groom.demo.member.service;
 
 import com.groom.demo.auth.oauth.SocialType;
+import com.groom.demo.code.entity.Project;
+import com.groom.demo.code.repository.ProjectRepository;
 import com.groom.demo.member.dto.*;
 import com.groom.demo.member.entity.Member;
+import com.groom.demo.member.entity.ProjectMember;
 import com.groom.demo.member.repository.MemberRepository;
+import com.groom.demo.member.repository.ProjectMemberRepository;
+import com.groom.demo.member.repository.ProjectMemberRepositoryImpl;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static com.groom.demo.code.entity.QProject.project;
 
 @Service
 @Transactional
@@ -22,6 +28,12 @@ public class MemberServiceImpl implements MemberService {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private ProjectRepository projectRepository;
+
+    @Autowired
+    private ProjectMemberRepository projectMemberRepository;
 
     // Memberinfo
     @Override
@@ -32,9 +44,7 @@ public class MemberServiceImpl implements MemberService {
     // 일반 회원가입시 주는 데이터
     @Override
     public void memberSignUp(MemberSignUpRequestDTO memberSignUpRequestDTO) {
-//
-//        JsonWebToken jsonWebToken = JwtTokenUtils.allocateToken(normalLogin, "ROLE_USER");
-//        response.addHeader("Authorization", jsonWebToken.getAccessToken());
+
         memberRepository.save(Member.builder()
                 .memberIdEmail(memberSignUpRequestDTO.getMemberIdMail())
                 .memberName(memberSignUpRequestDTO.getMemberName())
@@ -77,6 +87,13 @@ public class MemberServiceImpl implements MemberService {
             member.lastLoginRecord(LocalDateTime.now());
             return plusLastLogin;
         }
+    }
+
+    // 일반 로그인시 Refresh Token DB 저장
+    @Override
+    public void normalLoginRefreshToken(Long memberNo, String refreshToken) {
+        Member member = memberRepository.getReferenceById(memberNo);
+        member.changeToken(refreshToken);
     }
 
     // 회원탈퇴는 즉각적으로 이뤄져야 하기 때문에
@@ -143,7 +160,34 @@ public class MemberServiceImpl implements MemberService {
 
     }
 
-    //랜덤함수로 임시비밀번호 구문 만들기
+    // Refresh Token과 IdMail이 같은지 확인
+    // 아무것도 없으면? null로 받겠다 -> id와 token 둘 중 하나라도 다르면 null처리하겠다.
+    @Override
+    public Long isRefreshTokenAndIdOk(SendRefreshRequestAccessDTO sendRefreshRequestAccessDTO) {
+        Long isOk = memberRepository.memberRefreshTokenAndIdMail(sendRefreshRequestAccessDTO.getMemberIdMail()
+                                                , sendRefreshRequestAccessDTO.getMemberToken()).orElse(null);
+        return isOk;
+    }
+
+    // 프로젝트 컨테이너 내 다른 사용자 초대(Long -> String)
+    @Override
+    public void othersJoin(ProjectJoinOthersDTO projectJoinOthersDTO) {
+        List<Project> longChangeProject = projectRepository.findAllByContainerID(projectJoinOthersDTO.getContainerId());
+        if (longChangeProject.isEmpty()) {
+            return;
+        } else {
+//            Project joinOthers = projectRepository.getReferenceById(longChangeProject.get(0));
+            Member joinOthersTwo = memberRepository.selectMemberLogin(projectJoinOthersDTO.getOthersEmail()).orElse(null);
+            projectMemberRepository.save(
+                    ProjectMember.builder()
+                            .memberNo2(joinOthersTwo)
+                            .projectNo(longChangeProject.get(0))
+                            .projectLeader(projectJoinOthersDTO.getIsLeader())
+                            .build()
+            );
+        }
+    }
+    // 랜덤함수로 임시비밀번호 구문 만들기
     public String getTempPassword() {
         char[] charSet = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
                 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};

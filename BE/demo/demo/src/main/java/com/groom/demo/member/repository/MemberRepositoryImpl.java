@@ -122,4 +122,18 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
         );
     }
 
+    // Refresh Token과 IdEmail 같은지 확인
+    @Override
+    public Optional<Long> memberRefreshTokenAndIdMail(String memberIdMail, String memberToken) {
+        return Optional.ofNullable(
+                queryFactory.select(member.memberNo)
+                        .from(member)
+                        .where(
+                                member.memberIdEmail.eq(memberIdMail)
+                                        .and(member.memberToken.eq(memberToken))
+                        )
+                        .fetchFirst()
+        );
+    }
+
 }

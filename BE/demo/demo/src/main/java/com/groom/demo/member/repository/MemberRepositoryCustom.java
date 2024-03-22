@@ -30,4 +30,7 @@ public interface MemberRepositoryCustom {
     // PW 찾기(휴대폰인증 후 통과하면 본인 이메일로 임시 PW 전송)
     Optional<Member> memberPWFind(String memberIdeMail, String memberName, String memberPhone);
 
+    // RefreshToken과 Mail 같은지 확인
+    Optional<Long> memberRefreshTokenAndIdMail(String memberIdMail, String memberToken);
+
 }
