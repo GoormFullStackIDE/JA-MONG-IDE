@@ -19,5 +19,7 @@ public interface ProjectMemberService {
     // 사용자가 로그인 후 메인페이지에 보이는 컨테이너 목록 조회
     // 받을 수 있는 것은 Token 뿐이기 때문에 그것으로 MemberNo를 받고, 그것과 연관되어 있는 Project를 모두 뽑아온다.
     List<MainPageIndexDTO> mainIndex(Long memberToken);
+
+    // 컨테이너 입장시 컨테이너 참여자 목록 조회
     List<ContainerPageDTO> container(String containerId);
 }

@@ -22,5 +22,6 @@ public interface ProjectMemberRepositoryCustom {
     // 사용자가 로그인 후, 메인페이지에서 바라보는 컨테이너(프로젝트) 조회
     List<MainPageIndexDTO> mainPageIndex(Member mainPageMember);
 
+    // 컨테이너 입장시 컨테이너 참여자 목록 조회
     List<ContainerPageDTO> containerPage(String containerId);
 }

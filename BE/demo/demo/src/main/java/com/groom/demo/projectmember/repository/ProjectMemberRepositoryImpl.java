@@ -47,7 +47,7 @@ public class ProjectMemberRepositoryImpl implements ProjectMemberRepositoryCusto
     @Override
     public List<MainPageIndexDTO> mainPageIndex(Member mainPageMember) {
         return queryFactory.select(
-                        Projections.constructor(MainPageIndexDTO.class, project.containerID, projectMember.projectLeader)
+                        Projections.constructor(MainPageIndexDTO.class, project.containerID,project.project_name, projectMember.projectLeader)
                 )
                 .from(member)
                 .join(projectMember)
@@ -58,6 +58,11 @@ public class ProjectMemberRepositoryImpl implements ProjectMemberRepositoryCusto
                 .fetch();
     }
 
+    // 컨테이너 입장시에 조회되는 참여자 목록
+    // join 사용
+    // Member- Project(Code) - ProjectMember를 Join한다. 프론트가요청한 containerId와 같은 project_no를 뽑아냄
+    // 그 후, 한 번 더 Member- Project(Code) - ProjectMember를 Join한다. 위에서 요청한 project_no와 같은
+    // memberIdMail, memberName, isLeader를 출력한다.
     @Override
     public List<ContainerPageDTO> containerPage(String containerId) {
 
@@ -69,8 +74,8 @@ public class ProjectMemberRepositoryImpl implements ProjectMemberRepositoryCusto
                 .on(project.eq(projectMember.projectNo))
                 .join(member)
                 .on(member.eq(projectMember.memberNo2))
-                .where(project.no.in(JPAExpressions
-                        .select(project.no)
+                .where(project.project_no.in(JPAExpressions
+                        .select(project.project_no)
                         .from(member)
                         .join(projectMember)
                         .on(member.eq(projectMember.memberNo2))
