@@ -33,4 +33,7 @@ public interface MemberRepositoryCustom {
     // RefreshToken과 Mail 같은지 확인
     Optional<Long> memberRefreshTokenAndIdMail(String memberIdMail, String memberToken);
 
+    // 제욱님 : Code 폴더 내의 project_owner로 Member_no 조회하는 것
+//    Optional<Long> porjectOwnerNo(String ownerMail);
+
 }

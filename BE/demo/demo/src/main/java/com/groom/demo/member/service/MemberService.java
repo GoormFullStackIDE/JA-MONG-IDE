@@ -41,7 +41,4 @@ public interface MemberService  {
     // Refresh Token과 IDMail이 같은지 확인하기
     Long isRefreshTokenAndIdOk(SendRefreshRequestAccessDTO sendRefreshRequestAccessDTO);
 
-    // 프로젝트 다른 사용자 초대
-    void othersJoin(ProjectJoinOthersDTO projectJoinOthersDTO);
-
 }

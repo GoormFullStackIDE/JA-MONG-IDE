@@ -5,10 +5,9 @@ import com.groom.demo.code.entity.Project;
 import com.groom.demo.code.repository.ProjectRepository;
 import com.groom.demo.member.dto.*;
 import com.groom.demo.member.entity.Member;
-import com.groom.demo.member.entity.ProjectMember;
 import com.groom.demo.member.repository.MemberRepository;
-import com.groom.demo.member.repository.ProjectMemberRepository;
-import com.groom.demo.member.repository.ProjectMemberRepositoryImpl;
+import com.groom.demo.projectmember.entity.ProjectMember;
+import com.groom.demo.projectmember.repository.ProjectMemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +18,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.groom.demo.code.entity.QProject.project;
-
 @Service
 @Transactional
 @Slf4j
@@ -28,12 +25,6 @@ public class MemberServiceImpl implements MemberService {
 
     @Autowired
     private MemberRepository memberRepository;
-
-    @Autowired
-    private ProjectRepository projectRepository;
-
-    @Autowired
-    private ProjectMemberRepository projectMemberRepository;
 
     // Memberinfo
     @Override
@@ -169,24 +160,7 @@ public class MemberServiceImpl implements MemberService {
         return isOk;
     }
 
-    // 프로젝트 컨테이너 내 다른 사용자 초대(Long -> String)
-    @Override
-    public void othersJoin(ProjectJoinOthersDTO projectJoinOthersDTO) {
-        List<Project> longChangeProject = projectRepository.findAllByContainerID(projectJoinOthersDTO.getContainerId());
-        if (longChangeProject.isEmpty()) {
-            return;
-        } else {
-//            Project joinOthers = projectRepository.getReferenceById(longChangeProject.get(0));
-            Member joinOthersTwo = memberRepository.selectMemberLogin(projectJoinOthersDTO.getOthersEmail()).orElse(null);
-            projectMemberRepository.save(
-                    ProjectMember.builder()
-                            .memberNo2(joinOthersTwo)
-                            .projectNo(longChangeProject.get(0))
-                            .projectLeader(projectJoinOthersDTO.getIsLeader())
-                            .build()
-            );
-        }
-    }
+
     // 랜덤함수로 임시비밀번호 구문 만들기
     public String getTempPassword() {
         char[] charSet = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
