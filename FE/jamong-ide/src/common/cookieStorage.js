@@ -21,9 +21,9 @@ export const getCookieToken = () => {
 };
 
 //로그아웃할때 리프레쉬토큰을 지울 때 쓸 함수
-export const removeCookieToken = () => {
+export default function removeCookieToken() {
   return cookies.remove('refreshToken', { sameSite: 'strict', path: '/' });
-};
+}
 
 //쿠키 사용저장 함수, 형식이 설정되어있다.
 // import {Cookies} from 'react-cookie';

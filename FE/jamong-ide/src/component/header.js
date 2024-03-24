@@ -56,25 +56,25 @@ export default function Header(props) {
 
   // 아바타다이알로그를 클릭할때 api호출
   // 아바타 다이알로그
-  const [avatarOpen, setAvatarOpen] = useState(false);
+  //const [avatarOpen, setAvatarOpen] = useState(false);
   // const [selectedValue, setSelectedValue] = useState(emails[1]);
 
-  const handleClickOpen = () => {
-    setAvatarOpen(!avatarOpen);
-  };
+  // const handleClickOpen = () => {
+  //   setAvatarOpen(!avatarOpen);
+  // };
 
-  const handleClose = (value) => {
-    setAvatarOpen(false);
-    // setSelectedValue(value);
-  };
+  // const handleClose = (value) => {
+  //   setAvatarOpen(false);
+  //   // setSelectedValue(value);
+  // };
 
-  ProfileDialog.propTypes = {
-    onClose: PropTypes.func.isRequired,
-    avatarOpen: PropTypes.bool.isRequired,
-    //   selectedValue: PropTypes.string.isRequired,
-  };
+  // ProfileDialog.propTypes = {
+  //   onClose: PropTypes.func.isRequired,
+  //   avatarOpen: PropTypes.bool.isRequired,
+  //   //   selectedValue: PropTypes.string.isRequired,
+  // };
 
-  console.log(member.authenticated);
+  // console.log(member.authenticated);
 
   return (
     <ThemeProvider theme={colorTheme}>
@@ -105,16 +105,12 @@ export default function Header(props) {
 
           {isDisabled ? (
             // <Stack spacing={1} direction="row">
-            <button
-              className="circle_avatar_btn"
-              onClick={() => handleClickOpen()}
-            >
-              <Avatar
-                sx={{ width: 51, height: 51, mt: -0.1, ml: -0.8 }}
-                alt="jamong.png"
-                src="/images/jamong.png"
-              />
-            </button>
+
+            <Avatar
+              sx={{ width: 51, height: 51, mt: -0.1, ml: -0.8 }}
+              alt="jamong.png"
+              src="/images/jamong.png"
+            />
           ) : (
             // </Stack>
             <Stack spacing={2} direction="row">
@@ -127,11 +123,11 @@ export default function Header(props) {
               </Button>
             </Stack>
           )}
-          <ProfileDialog
+          {/* <ProfileDialog
             // selectedValue={selectedValue}
             avatarOpen={avatarOpen}
             onClose={handleClose}
-          />
+          /> */}
         </Toolbar>
       </AppBar>
     </ThemeProvider>

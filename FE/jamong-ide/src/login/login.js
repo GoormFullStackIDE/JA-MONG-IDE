@@ -50,9 +50,10 @@ function LoginPage() {
     console.log(memberLogin);
     try {
       //헤더에 액세스 토큰 저장 = 이거 새로고침하면 없어짐...ㅠㅠ
-      // axios.defaults.headers.common[
-      //   'Authorization'
-      // ] = `Bearer ${memberLogin.headers.authorization}`;
+      axios.defaults.headers.common[
+        'Authorization'
+      ] = `Bearer ${memberLogin.headers.authorization}`;
+      //useContext 사용
       setToken(memberLogin.headers.authorization);
 
       //쿠키에 리프레쉬 토큰 저장
@@ -64,8 +65,9 @@ function LoginPage() {
         token: memberLogin.headers.authorization,
       };
       dispatch(Login(payload));
+      localStorage.setItem('memberIdMail', loginInfo.memberIdEmail);
 
-      navigate('/');
+      navigate('/container');
     } catch (error) {
       if (memberLogin.data.message !== 'Success') {
         const payload = {
@@ -138,19 +140,28 @@ function LoginPage() {
         <div className="social_login_box01">
           <button
             className="social_googlebtn"
-            onclick="location.href='http://localhost:8088/jamong/member/login/google'"
+            onClick={() => {
+              window.location.href =
+                'http://localhost:8088/jamong/member/login/google';
+            }}
           >
             구글로 로그인
           </button>
           <button
             className="social_naverbtn"
-            onclick="location.href='http://localhost:8088/jamong/member/login/naver'"
+            onClick={() => {
+              window.location.href =
+                'http://localhost:8088/jamong/member/login/naver';
+            }}
           >
             네이버로 로그인
           </button>
           <button
             className="social_kakaobtn"
-            onclick="location.href='http://localhost:8088/jamong/member/login/kakao'"
+            onClick={() => {
+              window.location.href =
+                'http://localhost:8088/jamong/member/login/kakao';
+            }}
           >
             카카오로 로그인
           </button>

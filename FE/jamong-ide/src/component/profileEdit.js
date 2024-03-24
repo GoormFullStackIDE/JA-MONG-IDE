@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { showAlert } from '../common/confirmAlert';
 import Config from '../common/config';
+import accessTokenApi from '../common/tokenApi';
+import Avatar from '@mui/material/Avatar';
+import accessKey from '../common/awsS3';
+import AWS from 'aws-sdk';
+import { useNavigate } from 'react-router-dom';
 
 const initMemberInfo = {
   name: '',
-  mail: '',
+  email: '',
   password: '',
+  passwordConfirm: '',
   phone: '',
   address: '',
   addressdetail: '',
@@ -18,6 +24,166 @@ const initMemberInfo = {
 const ProfilePage = () => {
   const [memberInfo, setMemberInfo] = useState(initMemberInfo);
   const [isAuthentication, setIsAuthentication] = useState(false);
+  const [confirmationVisible, setConfirmationVisible] = useState(false);
+  const [isPasswordRegex, setIsPasswordRegex] = useState(''); //정규식 틀리면 false
+  const [infoChangePopup, setInfoChangePopup] = useState(false);
+  const [popupVisible, setPopupVisible] = useState();
+  const member = useSelector((state) => state.member);
+  const [file, setFile] = useState(`/images/jamong.png`); //이미지주소 blob형태
+  const [imgFile, setImgFile] = useState(null); //이미지파일
+  const [preview, setPreview] = useState('');
+
+  const [imgBlob, setImgBlob] = useState(null);
+  const [isPassword, setIsPassword] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const imgRef = useRef(null);
+  const reader = new FileReader();
+
+  // let blob = new Blob([new ArrayBuffer(data)], { type: "image/png" });
+  // const url = window.URL.createObjectURL(blob);
+
+  const getImg = () => {
+    console.log(file);
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setPreview(reader.result);
+    };
+    console.log(reader.result);
+  };
+  console.log(file);
+  console.log(imgFile);
+
+  const handleFileChange = (e) => {
+    console.log(e.target.files[0]);
+    const fileIn = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      const blob = new Blob([reader.result], { type: fileIn.type });
+      setFile(blob); // Blob으로 변환된 파일을 imgFile 상태 변수에 저장
+      setImgFile(URL.createObjectURL(blob)); // Blob을 URL로 변환하여 file 상태 변수에 저장
+      // getImg();
+    };
+
+    reader.readAsArrayBuffer(fileIn); // 파일을 ArrayBuffer로 읽습니다.
+  };
+
+  // const handleFileChange = (e) => {
+  //   console.log(e.target.files[0]);
+  //   const fileIn = e.target.files[0];
+  //   setImgFile(fileIn); //이미지파일그대로 넣기
+  //   const fileUrl = URL.createObjectURL(fileIn); //url로 만들어 넣기
+  //   setFile(fileUrl);
+  //   getImg();
+  // };
+  function checkPassword(password) {
+    const regex =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@!%*#?&])[A-Za-z\d@!%*#?&]{8,}$/;
+    const test = regex.test(password);
+    setIsPasswordRegex(test);
+  }
+  const clickFileInput = () => {
+    imgRef.current?.click();
+  };
+
+  //정보변경 저장 누를때 호출 /S3에 저장
+  const uploadFile = async () => {
+    const S3_BUCKET = 'jamongide';
+    const REGION = 'Asia Pacific (Seoul) ap-northeast-2';
+
+    AWS.config.update({
+      region: REGION,
+      accessKeyId: accessKey.accessKeyId,
+      secretAccessKey: accessKey.secretAccessKey,
+    });
+
+    // const s3 = new AWS.S3({
+    //   params: { Bucket: S3_BUCKET },
+    //   region: REGION,
+    // });
+
+    // const params = {
+    //  ACL: 'public-read',
+    //   Bucket: S3_BUCKET,
+    //   Key: imgFile.name,
+    //   Body: imgFile,
+    // };
+    // console.log(params);
+    // var upload = s3
+    //   .putObject(params)
+    //   .on('httpUploadProgress', (evt) => {
+    //     console.log(
+    //       'Uploading ' + parseInt((evt.loaded * 100) / evt.total) + '%'
+    //     );
+    //   })
+    //   .promise();
+    console.log('버킷 업로드 위');
+
+    console.log('AWS.config.update', AWS.config.update);
+    const upload = new AWS.S3.ManagedUpload({
+      params: {
+        Bucket: S3_BUCKET, // 버킷 이름
+        Key: imgFile.name, // 파일 이름
+        Body: imgFile, // 파일 객체
+      },
+    });
+    console.log(imgFile);
+    console.log('버킷 업로드 아래');
+    // await upload.then((err, data) => {
+    //   console.log(err);
+    //   alert('File uploaded successfully.');
+    // });
+    const promise = upload.promise();
+    promise.then(
+      function () {
+        // 이미지 업로드 성공
+        console.log('upload', upload);
+        window.setTimeout(function () {
+          Location.reload();
+        }, 2000);
+      },
+      function (err) {
+        console.log(err);
+
+        // 이미지 업로드 실패
+      }
+    );
+  };
+
+  useEffect(() => {
+    infoGet();
+  }, []);
+
+  async function infoGet() {
+    const data = await accessTokenApi.get('jamong/member/info', {
+      headers: {
+        Authorization: member.token,
+      },
+    });
+    console.log(data.data[0]);
+    setMemberInfo({
+      name: data.data[0].memberName,
+      email: data.data[0].memberEmail,
+      phone: data.data[0].memberPhone,
+      address: data.data[0].memberAddress,
+      addressdetail: data.data[0].memberAddressDetail,
+      zip: data.data[0].memberAddressZip,
+      password: '',
+      passwordConfirm: '',
+    });
+    if (data.data[0].memberFile !== null) {
+      setFile(data.data[0].memberFile);
+      getImg();
+    }
+  }
+
+  function memberChanged(infoName, e) {
+    const member = { ...memberInfo };
+    member[infoName] = e.target.value;
+    setMemberInfo(member);
+  }
 
   function authNumberClick() {
     if (memberInfo['authenticationNumber'] == memberInfo['authNumber']) {
@@ -83,8 +249,9 @@ const ProfilePage = () => {
   }
 
   const handleWithdrawal = () => {
-    setConfirmationVisible(true); // 회원탈퇴 팝업 열기
+    setConfirmationVisible(!confirmationVisible); // 회원탈퇴 팝업 열기
   };
+
   const isConfirm = (passwordConfirm) => {
     if (passwordConfirm === memberInfo['password']) {
       setIsPassword(true);
@@ -93,29 +260,49 @@ const ProfilePage = () => {
     }
   };
 
-  const handleConfirmYes = () => {
+  const withdraw = () => {
+    //딜리트 api붙이기
     setConfirmationVisible(false);
-    setPopupVisible(true);
+    setPopupVisible(true); //회원탈퇴 완료창 띄움
   };
 
-  const handleClosePopup = () => {
+  const ClosePopup = () => {
     setPopupVisible(false);
-    setInfoChangePopupVisible(false);
+    setInfoChangePopup(false);
+    setConfirmationVisible(false);
   };
 
-  function memberChanged(infoName, e) {
-    const member = { ...memberInfo };
-    member[infoName] = e.target.value;
-    setMemberInfo(member);
-    console.log(memberInfo);
-  }
+  const saveComplete = () => {
+    setInfoChangePopup(!infoChangePopup);
+    navigate('/container');
+  };
 
   return (
     <div className="profile_box">
       <div className="pro_inner">
         <div className="picture_box">
-          <p className="pro_pic"></p>
-          <button className="p_select" onClick="">
+          {preview === '' ? (
+            <Avatar
+              sx={{
+                mt: 1,
+                width: 200,
+                height: 200,
+                backgroundColor: '#FFF7F4',
+              }}
+              alt="profile_picture"
+              src={file}
+            />
+          ) : (
+            <img className="picture" src={preview} />
+          )}
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            ref={imgRef}
+            hidden
+          />
+          <button className="p_select" onClick={clickFileInput}>
             이미지 선택
           </button>
         </div>
@@ -146,23 +333,54 @@ const ProfilePage = () => {
               type="password"
               placeholder="비밀번호 (영문 대소문자, 숫자 특수문자 8-16자)"
               value={memberInfo['password']}
-              onChange={(e) => memberChanged('password', e)}
+              onChange={(e) => {
+                memberChanged('password', e);
+                checkPassword(e.target.value);
+              }}
             />
+            {memberInfo['password'] === '' ? (
+              <></>
+            ) : isPasswordRegex ? (
+              <img
+                className="check02"
+                src="/images/checked.png"
+                alt="checked"
+              />
+            ) : (
+              <img className="check02" src="/images/cancel.png" alt="cancel" />
+            )}
           </li>
+
           <li>
             <input
               className="list1"
               type="password"
               placeholder="비밀번호 확인"
-              value={memberInfo['password']}
-              onChange={(e) => memberChanged('password', e)}
+              value={memberInfo['passwordConfirm']}
+              onChange={(e) => {
+                memberChanged('passwordConfirm', e);
+                isConfirm(e.target.value);
+              }}
+              maxLength="16"
             />
+            {memberInfo['passwordConfirm'] === '' ? (
+              <></>
+            ) : isPassword ? (
+              <img
+                className="check02"
+                src="/images/checked.png"
+                alt="checked"
+              />
+            ) : (
+              <img className="check02" src="/images/cancel.png" alt="cancel" />
+            )}
           </li>
+
           <li>
             <input
               className="list2"
               type="text"
-              placeholder="주소"
+              placeholder="주소[우편번호]"
               disabled={true}
               name="zip"
               id="zip"
@@ -183,8 +401,10 @@ const ProfilePage = () => {
               className="list1"
               type="text"
               placeholder="상세주소"
-              value={memberInfo['address_detail']}
-              onChange={(e) => memberChanged('detail_address', e)}
+              name="addressdetail"
+              value={memberInfo['addressdetail']}
+              onChange={(e) => memberChanged('addressdetail', e)}
+              maxLength="49"
             />
           </li>
           <li>
@@ -207,40 +427,41 @@ const ProfilePage = () => {
               value={memberInfo['authenticationNumber']}
               onChange={(e) => memberChanged('authenticationNumber', e)}
             />
-            <button className="pro_b">확인</button>
+            <button className="pro_b" onClick={() => authNumberClick()}>
+              확인
+            </button>
           </li>
         </ul>
       </div>
+
       <div className="member_info">
-        <button className="m_change">정보 변경</button>
-        <button className="m_cancel">회원 탈퇴</button>
+        <button className="m_change" onClick={uploadFile}>
+          정보 변경
+        </button>
+        <button className="m_cancel" onClick={handleWithdrawal}>
+          회원 탈퇴
+        </button>
       </div>
 
       {confirmationVisible && (
         <div className="popup">
           <div className="popup_content">
             <p> 자몽 IDE에서 탈퇴하시겠습니까?</p>
-            <button className="pop_yes" onClick={handleConfirmYes}>
+            <button className="pop_yes" onClick={withdraw}>
               확인
             </button>
-            <button
-              className="pop_no"
-              onClick={() => setConfirmationVisible(false)}
-            >
+            <button className="pop_no" onClick={ClosePopup}>
               취소
             </button>
           </div>
         </div>
       )}
-      {infoChangePopupVisible && (
+      {infoChangePopup && (
         <div className="popup">
           <div className="popup_content">
             <p>개인정보 변경이 완료되었습니다.</p>
-            <button className="pop_ok" onClick={handleClosePopup}>
+            <button className="pop_ok" onClick={ClosePopup}>
               확인
-            </button>
-            <button className="pop_close" onClick={handleClosePopup}>
-              X
             </button>
           </div>
         </div>
@@ -249,11 +470,8 @@ const ProfilePage = () => {
         <div className="popup">
           <div className="popup_content">
             <p>회원탈퇴가 완료되었습니다.</p>
-            <button className="pop_ok" onClick={handleClosePopup}>
+            <button className="pop_ok" onClick={ClosePopup}>
               확인
-            </button>
-            <button className="pop_close" onClick={handleClosePopup}>
-              X
             </button>
           </div>
         </div>

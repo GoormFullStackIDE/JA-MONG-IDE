@@ -174,7 +174,7 @@ function Layout() {
                 width: open ? drawerWidth : 0,
                 boxSizing: 'border-box',
                 height: '100%',
-                // overflow: 'visible',
+                overflow: 'hidden',
               },
             }}
             open={open}
@@ -194,6 +194,7 @@ function Layout() {
               component="nav"
               sx={{
                 backgroundColor: '#FFF7F4',
+                padding: '0px',
               }}
             >
               <MainListItems />

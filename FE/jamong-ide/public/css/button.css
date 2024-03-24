@@ -164,3 +164,28 @@
   height: 51px;
   background-color: #fffdfb;
 }
+
+/* 프로필 편집, 로그아웃 버튼 */
+.profile_btn_box {
+  height: 100%;
+  /* display: contents; */
+}
+.profile_btn {
+  margin: 5px;
+  width: 11vh;
+  border: 0px;
+  height: 43px;
+  border-radius: 9px;
+  cursor: pointer;
+  background-color: #ffae8c;
+  color: #666;
+  /* 세로 */
+  /* margin: 4px;
+    width: 20vh;
+    border: 0px;
+    height: 31px;
+    border-radius: 9px;
+    cursor: pointer;
+    background-color: #ffae8c;
+    color: #666; */
+}
