@@ -3,10 +3,6 @@ package com.groom.demo.projectmember.dto;
 import lombok.Data;
 
 @Data
-public class ProjectJoinOthersDTO {
+public class ContainerPageRequestDTO {
     private String containerId;
-    private String othersEmail;
-    private Boolean isLeader;
-
-
 }
