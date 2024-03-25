@@ -25,8 +25,8 @@ import java.util.UUID;
 public class S3UploadService {
 
     private final AuthConfig authConfig;
-    private String bucket = "jamongide.kro.kr";
-    private String s3domain = "https://s3-ap-northeast-2.amazonaws.com/jamongide.kro.kr/";
+    private String bucket = "jamongides3";
+    private String s3domain = "https://jamongides3.s3.ap-northeast-2.amazonaws.com/";
     private S3Client s3Client;
 
     //S3Access 권한 가진 IAM 유저의 public key, private key로 s3client 객체 생성

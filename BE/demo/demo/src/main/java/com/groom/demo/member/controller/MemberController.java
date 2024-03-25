@@ -5,6 +5,7 @@ import com.groom.demo.auth.util.JwtTokenUtils;
 import com.groom.demo.config.AuthConfig;
 import com.groom.demo.member.dto.*;
 import com.groom.demo.member.service.MemberService;
+import com.groom.demo.member.service.S3UploadService;
 import com.groom.demo.member.util.EmailUtil;
 import io.micrometer.common.util.StringUtils;
 import jakarta.mail.Authenticator;
@@ -48,8 +49,8 @@ public class MemberController {
     private MemberService memberService;
 
     //혹시 모름@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-//    @Autowired
-//    private S3UploadService s3UploadService;
+    @Autowired
+    private S3UploadService s3UploadService;
     //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     @Autowired
     private AuthConfig authConfig;
@@ -219,35 +220,35 @@ public class MemberController {
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     // 혹시 모름
 
-//    // 프로필편집 - 이미지 등록
-//    @PutMapping("/modify")
-//    public ResponseEntity<?> modifyProfile(@RequestBody MemberModifyDTO memberModifyDTO) {
-//        Map<String, String> responsebody = new HashMap<>();
-//        responsebody.put("message", "Success");
-//        Long modifyMemberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-//        String name = memberModifyDTO.getMemberName();
-//        String phone = memberModifyDTO.getMemberPhone();
-//        String pass = memberModifyDTO.getMemberPass();
-//
-//        if (StringUtils.isBlank(name) || StringUtils.isBlank(phone) || StringUtils.isBlank(pass)) {
-//
-//            return new ResponseEntity<>("이름, 휴대폰번호, 비밀번호는 빈 값으로 두면 안됩니다.", HttpStatus.BAD_REQUEST);
-//        }
-//
-//        if (memberService.isProfileOK(memberModifyDTO.getMemberPass(), modifyMemberNo)) {
-//            String uploadIMG = null;
-//            if (!memberModifyDTO.getMemberFile().isEmpty()) {
-//                uploadIMG = s3UploadService.upload(memberModifyDTO.getMemberFile(), "jamongProfile");
-//            }
-//            memberService.memberProfileModify(memberModifyDTO, modifyMemberNo, uploadIMG);
-//            return new ResponseEntity<>(responsebody, HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>("직전에 사용했던 비밀번호로는 수정할 수 없습니다.", HttpStatus.BAD_REQUEST);
-//
-//        }
-//
-//
-//    }
+    // 프로필편집 - 이미지 등록
+    @PutMapping("/modify")
+    public ResponseEntity<?> modifyProfile(@ModelAttribute MemberModifyDTO memberModifyDTO) {
+        Map<String, String> responsebody = new HashMap<>();
+        responsebody.put("message", "Success");
+        Long modifyMemberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        String name = memberModifyDTO.getMemberName();
+        String phone = memberModifyDTO.getMemberPhone();
+        String pass = memberModifyDTO.getMemberPass();
+
+        if (StringUtils.isBlank(name) || StringUtils.isBlank(phone) || StringUtils.isBlank(pass)) {
+
+            return new ResponseEntity<>("이름, 휴대폰번호, 비밀번호는 빈 값으로 두면 안됩니다.", HttpStatus.BAD_REQUEST);
+        }
+
+        if (memberService.isProfileOK(memberModifyDTO.getMemberPass(), modifyMemberNo)) {
+            String uploadIMG = null;
+            if (!memberModifyDTO.getMemberFile().isEmpty()) {
+                uploadIMG = s3UploadService.upload(memberModifyDTO.getMemberFile(), "jamongProfile");
+            }
+            memberService.memberProfileModify(memberModifyDTO, modifyMemberNo, uploadIMG);
+            return new ResponseEntity<>(responsebody, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("직전에 사용했던 비밀번호로는 수정할 수 없습니다.", HttpStatus.BAD_REQUEST);
+
+        }
+
+
+    }
 //   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
     // Access Token 값 만료 되었을 경우 Refresh Token 전달 후 새로운 Access Token 생성
@@ -268,31 +269,33 @@ public class MemberController {
         }
     }
 
-    // 프로필편집 - 이미지 등록
-    @PutMapping("/modify")
-    public ResponseEntity<?> modifyProfile(@RequestBody MemberModifyDTO memberModifyDTO) {
-        Map<String, String> responsebody = new HashMap<>();
-        responsebody.put("message", "Success");
-        Long modifyMemberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-        String name = memberModifyDTO.getMemberName();
-        String phone = memberModifyDTO.getMemberPhone();
-        String pass = memberModifyDTO.getMemberPass();
-
-        if (StringUtils.isBlank(name) || StringUtils.isBlank(phone) || StringUtils.isBlank(pass)) {
-
-            return new ResponseEntity<>("이름, 휴대폰번호, 비밀번호는 빈 값으로 두면 안됩니다.", HttpStatus.BAD_REQUEST);
-        }
-
-        if (memberService.isProfileOK(memberModifyDTO.getMemberPass(), modifyMemberNo)) {
-            String uploadIMG = memberModifyDTO.getMemberFile();
-            memberService.memberProfileModify(memberModifyDTO, modifyMemberNo, uploadIMG);
-            return new ResponseEntity<>(responsebody, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("직전에 사용했던 비밀번호로는 수정할 수 없습니다.", HttpStatus.BAD_REQUEST);
-
-        }
-
-
-    }
+    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@//
+    // 또.. 혹시 모름..
+//    // 프로필편집 - 이미지 등록
+//    @PutMapping("/modify")
+//    public ResponseEntity<?> modifyProfile(@RequestBody MemberModifyDTO memberModifyDTO) {
+//        Map<String, String> responsebody = new HashMap<>();
+//        responsebody.put("message", "Success");
+//        Long modifyMemberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+//        String name = memberModifyDTO.getMemberName();
+//        String phone = memberModifyDTO.getMemberPhone();
+//        String pass = memberModifyDTO.getMemberPass();
+//
+//        if (StringUtils.isBlank(name) || StringUtils.isBlank(phone) || StringUtils.isBlank(pass)) {
+//
+//            return new ResponseEntity<>("이름, 휴대폰번호, 비밀번호는 빈 값으로 두면 안됩니다.", HttpStatus.BAD_REQUEST);
+//        }
+//
+//        if (memberService.isProfileOK(memberModifyDTO.getMemberPass(), modifyMemberNo)) {
+//            String uploadIMG = memberModifyDTO.getMemberFile();
+//            memberService.memberProfileModify(memberModifyDTO, modifyMemberNo, uploadIMG);
+//            return new ResponseEntity<>(responsebody, HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>("직전에 사용했던 비밀번호로는 수정할 수 없습니다.", HttpStatus.BAD_REQUEST);
+//
+//        }
+//
+//
+//    }
 
 }
