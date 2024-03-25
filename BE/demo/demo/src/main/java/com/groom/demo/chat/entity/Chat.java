@@ -20,13 +20,20 @@ public class Chat {
     private String msg;
     private boolean isDeleted;
     private LocalDateTime createdAt;
+    private String senderMail;
+    private String senderFile;
+    private String senderName;
 
     @Builder
-    public Chat(Long senderNo, String roomNo, String msg, boolean isDeleted, LocalDateTime createdAt) {
+    public Chat(Long no, Long senderNo, String roomNo, String msg, boolean isDeleted, LocalDateTime createdAt, String senderMail, String senderFile, String senderName) {
+        this.no = no;
         this.senderNo = senderNo;
         this.roomNo = roomNo;
         this.msg = msg;
         this.isDeleted = isDeleted;
         this.createdAt = createdAt;
+        this.senderMail = senderMail;
+        this.senderFile = senderFile;
+        this.senderName = senderName;
     }
 }

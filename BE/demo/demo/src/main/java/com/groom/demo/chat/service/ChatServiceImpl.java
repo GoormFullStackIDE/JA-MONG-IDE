@@ -6,6 +6,8 @@ import com.groom.demo.chat.dto.ChatSearchDTO;
 import com.groom.demo.chat.entity.Chat;
 import com.groom.demo.chat.repository.ChatReactRepository;
 import com.groom.demo.chat.repository.ChatRepository;
+import com.groom.demo.member.entity.Member;
+import com.groom.demo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ import java.util.Optional;
 public class ChatServiceImpl implements ChatService {
     private final ChatReactRepository chatReactRepository;
     private final ChatRepository chatRepository;
+    private final MemberRepository memberRepository;
 
     // 채팅 받기
     @Override
@@ -33,8 +36,12 @@ public class ChatServiceImpl implements ChatService {
     }
 
     // 채팅 보내기
+    // 보내기에 넣어서 DB에 넣어서 그대로 빼오게 하기
+    // 넣는 과정에 Token에 Id가 있어서 Member 정보를 빼왔음. 그것을 통해서 이름, 메일, 파일을 빼옴 -> DB 저장
+    // 이걸 보내기에 넣은 이유 -> 받기에서 그대로 받아오려고
     @Override
     public void insert(ChatRequest chatRequest, Long userId) {
+        Member member = memberRepository.getReferenceById(userId);
         chatRepository.save(
                 Chat.builder()
                         .senderNo(userId)
@@ -42,6 +49,9 @@ public class ChatServiceImpl implements ChatService {
                         .msg(chatRequest.getMsg())
                         .isDeleted(false)
                         .createdAt(LocalDateTime.now())
+                        .senderMail(member.getMemberIdEmail())
+                        .senderFile(member.getMemberFile())
+                        .senderName(member.getMemberName())
                         .build()
         );
     }
@@ -68,10 +78,13 @@ public class ChatServiceImpl implements ChatService {
         if (chat.isDeleted())
             chat.setMsg("삭제되었습니다.");
         return ChatResponse.builder()
-                .no(chat.getNo())
+                .chatNo(chat.getNo())
                 .msg(chat.getMsg())
                 .createdAt(chat.getCreatedAt())
                 .senderNo(chat.getSenderNo())
+                .memberMail(chat.getSenderMail())
+                .memberFile(chat.getSenderFile())
+                .memberName(chat.getSenderName())
                 .build();
     }
 
