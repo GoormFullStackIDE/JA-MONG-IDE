@@ -10,6 +10,7 @@ import io.micrometer.common.util.StringUtils;
 import jakarta.mail.Authenticator;
 import jakarta.mail.PasswordAuthentication;
 import jakarta.mail.Session;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.NurigoApp;
@@ -20,6 +21,7 @@ import net.nurigo.sdk.message.service.DefaultMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.MultiValueMap;
@@ -30,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static com.groom.demo.auth.util.JwtTokenUtils.REFRESH_PERIOD;
 
 @Slf4j
 @RestController
@@ -118,7 +122,7 @@ public class MemberController {
 
     // 일반 로그인
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid MemberloginDTO memberloginDTO) {
+    public ResponseEntity<?> login(@RequestBody @Valid MemberloginDTO memberloginDTO, HttpServletResponse response) {
         Map<String, String> responsebody = new HashMap<>();
         responsebody.put("message", "Success");
         Long normalLogin = memberService.memberLogin(memberloginDTO.getMemberIdEmail(), memberloginDTO.getMemberPass());
@@ -131,6 +135,13 @@ public class MemberController {
             headers.add("Authorization", jsonWebToken.getAccessToken());
             // 리프레시 토큰을 넣어준다. 해당 member_Token에 넣자!
             memberService.normalLoginRefreshToken(normalLogin, jsonWebToken.getRefreshToken());
+            ResponseCookie cookie = ResponseCookie.from("Refresh",jsonWebToken.getRefreshToken())
+                    .sameSite("None")
+                    .secure(true)
+                    .path("/")
+                    .maxAge(REFRESH_PERIOD)
+                    .build();
+            headers.add("Set-Cookie",cookie.toString());
             return new ResponseEntity<>(responsebody, headers, HttpStatus.OK);
         }
     }
