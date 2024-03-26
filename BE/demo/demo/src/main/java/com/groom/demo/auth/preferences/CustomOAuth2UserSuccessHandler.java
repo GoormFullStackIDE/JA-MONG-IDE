@@ -7,6 +7,7 @@ import com.groom.demo.auth.util.JwtTokenUtils;
 import com.groom.demo.member.entity.Member;
 import com.groom.demo.member.repository.MemberRepository;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.io.IOException;
 
 import static com.groom.demo.auth.preferences.CustomOAuth2CookieAuthorizationRepository.OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME;
 import static com.groom.demo.auth.preferences.CustomOAuth2CookieAuthorizationRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
+import static com.groom.demo.auth.util.JwtTokenUtils.ACCESS_PERIOD;
 import static com.groom.demo.auth.util.JwtTokenUtils.REFRESH_PERIOD;
 
 
@@ -55,11 +57,11 @@ public class CustomOAuth2UserSuccessHandler extends SimpleUrlAuthenticationSucce
         CookieUtils.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
         CookieUtils.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME);
 
-//        //프론트에 전달할 쿠키
-//        Cookie acessCookie = new Cookie("Access", jsonWebToken.getAccessToken());
-//        acessCookie.setMaxAge((int) ACCESS_PERIOD);
-//        acessCookie.setPath("/");
-//        response.addCookie(acessCookie);
+        //프론트에 전달할 쿠키
+        Cookie acessCookie = new Cookie("Access", jsonWebToken.getAccessToken());
+        acessCookie.setMaxAge((int) ACCESS_PERIOD);
+        acessCookie.setPath("/");
+        response.addCookie(acessCookie);
 
         ResponseCookie cookie = ResponseCookie.from("Refresh",jsonWebToken.getRefreshToken())
                 .sameSite("None")
