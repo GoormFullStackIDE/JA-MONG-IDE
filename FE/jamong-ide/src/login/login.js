@@ -4,27 +4,28 @@ import axios from 'axios';
 import Config from '../common/config';
 import { showAlert } from '../common/confirmAlert';
 import { useDispatch } from 'react-redux';
-import { setRefreshToken } from '../common/cookieStorage.js';
 import { Login } from '../common/memberReducer';
-import { TokenContext } from '../common/tokenContext';
 
 const initLoginInfo = {
   memberIdEmail: '',
   memberPass: '',
 };
-// const [loginInfo, setLoginInfo] = useState(initLoginInfo);
 
 function LoginPage() {
   const [loginInfo, setLoginInfo] = useState(initLoginInfo);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { setToken } = useContext(TokenContext);
 
   function memberChanged(infoName, e) {
     const member = { ...loginInfo };
     member[infoName] = e.target.value;
     setLoginInfo(member);
     console.log(loginInfo);
+  }
+
+  async function socialGoLogin(params) {
+    const authUrl = `http://localhost:8088/jamong/member/login/${params}`;
+    window.location.href = authUrl;
   }
 
   async function goLogin() {
@@ -49,16 +50,8 @@ function LoginPage() {
     });
     console.log(memberLogin);
     try {
-      //헤더에 액세스 토큰 저장 = 이거 새로고침하면 없어짐...ㅠㅠ
-      axios.defaults.headers.common[
-        'Authorization'
-      ] = `Bearer ${memberLogin.headers.authorization}`;
-      //useContext 사용
-      setToken(memberLogin.headers.authorization);
-
       //쿠키에 리프레쉬 토큰 저장
-      setRefreshToken();
-      console.log('setRefreshToken', setRefreshToken);
+      // setRefreshToken();
 
       const payload = {
         authenticated: true,
@@ -141,8 +134,7 @@ function LoginPage() {
           <button
             className="social_googlebtn"
             onClick={() => {
-              window.location.href =
-                'http://localhost:8088/jamong/member/login/google';
+              socialGoLogin('google');
             }}
           >
             구글로 로그인
@@ -150,8 +142,7 @@ function LoginPage() {
           <button
             className="social_naverbtn"
             onClick={() => {
-              window.location.href =
-                'http://localhost:8088/jamong/member/login/naver';
+              socialGoLogin('naver');
             }}
           >
             네이버로 로그인
@@ -159,8 +150,7 @@ function LoginPage() {
           <button
             className="social_kakaobtn"
             onClick={() => {
-              window.location.href =
-                'http://localhost:8088/jamong/member/login/kakao';
+              socialGoLogin('kakao');
             }}
           >
             카카오로 로그인

@@ -9,7 +9,6 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import axios from 'axios';
-import TokenProvider from './common/tokenContext';
 
 axios.defaults.withCredentials = true;
 
@@ -17,15 +16,13 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <TokenProvider>
-        <CookiesProvider>
-          <Provider store={store}>
-            <PersistGate persistor={persistor}>
-              <App />
-            </PersistGate>
-          </Provider>
-        </CookiesProvider>
-      </TokenProvider>
+      <CookiesProvider>
+        <Provider store={store}>
+          <PersistGate persistor={persistor}>
+            <App />
+          </PersistGate>
+        </Provider>
+      </CookiesProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

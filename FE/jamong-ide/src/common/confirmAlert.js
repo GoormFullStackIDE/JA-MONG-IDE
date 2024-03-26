@@ -15,14 +15,8 @@ export const alertDialogInfoSlice = createSlice({
       state = { ...initAlertDialogInfo, ...action.payload };
       return state;
     },
-    // closeAlert: (state, action) => {
-    //   state = { ...initAlertDialogInfo };
-    //   console.log(state);
-    //   return state;
-    // },
     closeRedirectAlert: (state, action) => {
       state = { ...initAlertDialogInfo };
-      console.log(state);
       return state;
     },
   },

@@ -1,16 +1,6 @@
-// import React, { useState, useContext } from 'react';
-import axios, {
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosRequestHeaders,
-} from 'axios';
-import { getCookieToken, removeCookieToken } from './cookieStorage';
-// import { TokenContext } from '../common/tokenContext';
+import axios from 'axios';
+import { getCookieToken } from './cookieStorage';
 import Config from './config';
-import { useDispatch, useSelector } from 'react-redux';
-import Login from './memberReducer';
-//토큰이 작동안할경우 Bearer지우기
-// const { token, setToken } = useContext(TokenContext);
 
 // 액세스토큰을 가져와서 헤더에 붙여 함께 axios를 보내는 함수
 const accessTokenApi = axios.create({
@@ -29,9 +19,6 @@ async function postRefreshToken() {
     memberIdMail: localStorage.getItem('memberIdMail'),
     memberToken: getCookieToken,
   });
-  console.log(response.memberToken);
-  console.log(response.data);
-
   return response;
 }
 
@@ -108,22 +95,21 @@ accessTokenApi.interceptors.response.use(
       config,
       response: { status },
     } = error;
-    console.log(error);
     if (status === 410) {
-      console.log(status);
       if (
         error.response.data.message ===
           'Access 토큰의 유효기간이 지났습니다.' &&
         error.message === 'Request failed with status code 410'
       ) {
-        const originRequest = config;
         try {
+          const originRequest = config;
+
           const tokenResponse = await postRefreshToken();
           //201 : accessToken 재발급 성공
           //200 : accessToken 재발급 성공
+
           if (tokenResponse.status === 200) {
             const newAccessToken = tokenResponse.headers.authorization;
-            console.log(newAccessToken);
             axios.defaults.headers.common.Authorization = newAccessToken;
             localStorage.setItem('token', newAccessToken);
             originRequest.headers.Authorization = newAccessToken;
@@ -138,7 +124,7 @@ accessTokenApi.interceptors.response.use(
               error.response?.status === 422
             ) {
               alert('로그인이 만료되었습니다. 다시 로그인해 주시기바랍니다.');
-              //window.location.replace('/login');
+              window.location.replace('/login');
             } else {
               alert('이유를 알 수 없는 오류로 로그아웃되었습니다.');
             }

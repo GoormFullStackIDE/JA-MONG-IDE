@@ -15,7 +15,6 @@ export const memberInfoSlice = createSlice({
         ...action.payload,
         expireTime: new Date().getTime() + 1000 * 3600, //1시간
       };
-      console.log(state);
       // window.localStorage.setItem('member', JSON.stringify(state));
       return state;
     },

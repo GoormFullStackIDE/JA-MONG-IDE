@@ -21,7 +21,6 @@ import {
   ThemeProvider,
 } from '@mui/material';
 import { showAlert, closeRedirectAlert } from '../common/confirmAlert.js';
-import { Login, Logout } from '../common/memberReducer.js';
 import { createTheme } from '@mui/material/styles';
 
 function Layout() {
@@ -30,8 +29,6 @@ function Layout() {
   const alert = useSelector((state) => state.alert);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const member = useSelector((state) => state.member);
-  console.log(member);
   const drawerWidth = 230;
 
   const Drawer = styled(MuiDrawer, {
@@ -140,13 +137,11 @@ function Layout() {
   }
 
   function redirectClose() {
-    console.log(alert.path);
     navigate(alert.path);
     dispatch(closeRedirectAlert());
   }
 
   function redirectClose() {
-    console.log(alert.path);
     navigate(alert.path);
     dispatch(closeRedirectAlert());
   }

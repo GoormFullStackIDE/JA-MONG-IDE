@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -13,14 +13,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Login, Logout } from '../common/memberReducer.js';
 import { useSelector, useDispatch } from 'react-redux';
 import Avatar from '@mui/material/Avatar';
-import ProfileDialog from './profileDialog.js';
 
 export default function Header(props) {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const member = useSelector((state) => state.member);
   const dispatch = useDispatch();
-  const [isDisabled, setIsDisabled] = useState(member.authenticated);
+  const isDisabled = member.authenticated;
 
   const colorTheme = createTheme({
     palette: {
@@ -49,32 +48,6 @@ export default function Header(props) {
     props.setOpen(!open);
     setOpen(!open);
   };
-
-  // const loginStatus = () => {
-  //   setIsDisabled(!isDisabled)
-  // };
-
-  // 아바타다이알로그를 클릭할때 api호출
-  // 아바타 다이알로그
-  //const [avatarOpen, setAvatarOpen] = useState(false);
-  // const [selectedValue, setSelectedValue] = useState(emails[1]);
-
-  // const handleClickOpen = () => {
-  //   setAvatarOpen(!avatarOpen);
-  // };
-
-  // const handleClose = (value) => {
-  //   setAvatarOpen(false);
-  //   // setSelectedValue(value);
-  // };
-
-  // ProfileDialog.propTypes = {
-  //   onClose: PropTypes.func.isRequired,
-  //   avatarOpen: PropTypes.bool.isRequired,
-  //   //   selectedValue: PropTypes.string.isRequired,
-  // };
-
-  // console.log(member.authenticated);
 
   return (
     <ThemeProvider theme={colorTheme}>
@@ -123,11 +96,6 @@ export default function Header(props) {
               </Button>
             </Stack>
           )}
-          {/* <ProfileDialog
-            // selectedValue={selectedValue}
-            avatarOpen={avatarOpen}
-            onClose={handleClose}
-          /> */}
         </Toolbar>
       </AppBar>
     </ThemeProvider>

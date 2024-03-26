@@ -168,11 +168,12 @@
 /* 프로필 편집, 로그아웃 버튼 */
 .profile_btn_box {
   height: 100%;
+  width: 100%;
   /* display: contents; */
 }
 .profile_btn {
-  margin: 5px;
-  width: 11vh;
+  margin: 5px 4px 1px 5px;
+  width: 45%;
   border: 0px;
   height: 43px;
   border-radius: 9px;

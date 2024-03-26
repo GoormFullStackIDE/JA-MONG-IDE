@@ -8,6 +8,7 @@ import Avatar from '@mui/material/Avatar';
 import accessKey from '../common/awsS3';
 import AWS from 'aws-sdk';
 import { useNavigate } from 'react-router-dom';
+import removeCookieToken, { removeAccessToken } from '../common/cookieStorage';
 
 const initMemberInfo = {
   name: '',
@@ -23,10 +24,11 @@ const initMemberInfo = {
 
 const ProfilePage = () => {
   const [memberInfo, setMemberInfo] = useState(initMemberInfo);
-  const [isAuthentication, setIsAuthentication] = useState(false);
+  const [isAuthentication, setIsAuthentication] = useState(true);
   const [confirmationVisible, setConfirmationVisible] = useState(false);
   const [isPasswordRegex, setIsPasswordRegex] = useState(''); //정규식 틀리면 false
   const [infoChangePopup, setInfoChangePopup] = useState(false);
+  const [isPhoneChange, setIsPhoneChange] = useState('');
   const [popupVisible, setPopupVisible] = useState();
   const member = useSelector((state) => state.member);
   const [file, setFile] = useState(`/images/jamong.png`); //이미지주소 blob형태
@@ -45,20 +47,32 @@ const ProfilePage = () => {
   // const url = window.URL.createObjectURL(blob);
 
   const getImg = () => {
-    console.log(file);
     reader.readAsDataURL(file);
     reader.onloadend = () => {
       setPreview(reader.result);
     };
-    console.log(reader.result);
   };
   console.log(file);
   console.log(imgFile);
 
+  // const handleFileChange = (e) => {
+  //   console.log(e.target.files[0]);
+  //   const fileIn = e.target.files[0];
+  //   const reader = new FileReader();
+
+  //   reader.onloadend = () => {
+  //     const blob = new Blob([reader.result], { type: fileIn.type });
+  //     setFile(blob); // Blob으로 변환된 파일을 imgFile 상태 변수에 저장
+  //     setImgFile(URL.createObjectURL(blob)); // Blob을 URL로 변환하여 file 상태 변수에 저장
+  //     // getImg();
+  //   };
+
+  //   reader.readAsArrayBuffer(fileIn); // 파일을 ArrayBuffer로 읽습니다.
+  // };
+
   const handleFileChange = (e) => {
-    console.log(e.target.files[0]);
     const fileIn = e.target.files[0];
-    const reader = new FileReader();
+    // const reader = new FileReader();
 
     reader.onloadend = () => {
       const blob = new Blob([reader.result], { type: fileIn.type });
@@ -119,9 +133,7 @@ const ProfilePage = () => {
     //     );
     //   })
     //   .promise();
-    console.log('버킷 업로드 위');
 
-    console.log('AWS.config.update', AWS.config.update);
     const upload = new AWS.S3.ManagedUpload({
       params: {
         Bucket: S3_BUCKET, // 버킷 이름
@@ -129,8 +141,7 @@ const ProfilePage = () => {
         Body: imgFile, // 파일 객체
       },
     });
-    console.log(imgFile);
-    console.log('버킷 업로드 아래');
+
     // await upload.then((err, data) => {
     //   console.log(err);
     //   alert('File uploaded successfully.');
@@ -139,14 +150,12 @@ const ProfilePage = () => {
     promise.then(
       function () {
         // 이미지 업로드 성공
-        console.log('upload', upload);
         window.setTimeout(function () {
-          Location.reload();
+          // Location.reload();
         }, 2000);
       },
       function (err) {
         console.log(err);
-
         // 이미지 업로드 실패
       }
     );
@@ -162,7 +171,6 @@ const ProfilePage = () => {
         Authorization: member.token,
       },
     });
-    console.log(data.data[0]);
     setMemberInfo({
       name: data.data[0].memberName,
       email: data.data[0].memberEmail,
@@ -173,6 +181,7 @@ const ProfilePage = () => {
       password: '',
       passwordConfirm: '',
     });
+    setIsPhoneChange(data.data[0].memberPhone);
     if (data.data[0].memberFile !== null) {
       setFile(data.data[0].memberFile);
       getImg();
@@ -183,6 +192,21 @@ const ProfilePage = () => {
     const member = { ...memberInfo };
     member[infoName] = e.target.value;
     setMemberInfo(member);
+  }
+
+  async function phoneClick() {
+    const validity = await axios({
+      method: 'post',
+      url: encodeURI(Config.API_SERVER + 'jamong/member/signup/phone'),
+      data: { memberPhone: memberInfo['phone'] },
+    });
+    console.log(validity);
+    setIsAuthentication(false);
+    const payload = {
+      text: '인증번호가 발송되었습니다.',
+      open: true,
+    };
+    return dispatch(showAlert(payload));
   }
 
   function authNumberClick() {
@@ -233,21 +257,6 @@ const ProfilePage = () => {
     }
   }
 
-  async function phoneClick() {
-    const validity = await axios({
-      method: 'post',
-      url: encodeURI(Config.API_SERVER + 'jamong/member/signup/phone'),
-      data: { memberPhone: memberInfo['phone'] },
-    });
-    console.log(validity);
-    // setMemberInfo({ ...memberInfo, authenticationNumber: validity.data });
-    const payload = {
-      text: '인증번호가 발송되었습니다.',
-      open: true,
-    };
-    return dispatch(showAlert(payload));
-  }
-
   const handleWithdrawal = () => {
     setConfirmationVisible(!confirmationVisible); // 회원탈퇴 팝업 열기
   };
@@ -260,22 +269,99 @@ const ProfilePage = () => {
     }
   };
 
-  const withdraw = () => {
+  async function withdraw() {
     //딜리트 api붙이기
+    const deleteMember = await accessTokenApi.delete('jamong/member/delete', {
+      headers: {
+        Authorization: member.token,
+      },
+    });
+    deleteMember();
+    dispatch(Logout());
+    removeCookieToken();
+    localStorage.clear();
     setConfirmationVisible(false);
     setPopupVisible(true); //회원탈퇴 완료창 띄움
+  }
+  const withdrawClosePopup = () => {
+    setPopupVisible(false);
+    window.location.reload();
   };
 
-  const ClosePopup = () => {
-    setPopupVisible(false);
-    setInfoChangePopup(false);
+  const closePopup = () => {
     setConfirmationVisible(false);
   };
 
-  const saveComplete = () => {
-    setInfoChangePopup(!infoChangePopup);
+  const completeClosePopup = () => {
+    setInfoChangePopup(false);
     navigate('/container');
   };
+
+  const alertText = () => {
+    if (memberInfo['name'] === '') {
+      return '이름을 작성해 주시기 바랍니다.';
+    }
+    if (memberInfo['email'] === '') {
+      return '이메일이 유효하지 않습니다.';
+    }
+    if (isValidEmail === false) {
+      return '중복된 아이디가 존재합니다. 다른 아이디를 사용해주세요.';
+    }
+    if (memberInfo['password'] === '') {
+      return '비밀번호를 입력해 주시기 바랍니다.';
+    }
+    if (isPasswordRegex === false) {
+      return '비밀번호가 유효하지 않습니다.';
+    }
+    if (memberInfo['passwordConfirm'] !== memberInfo['password']) {
+      return '비밀번호 확인이 틀립니다.';
+    }
+    if (memberInfo['address'] === '주소') {
+      return '주소를 입력해 주시기 바랍니다.';
+    }
+    if (memberInfo['detail_address'] === '상세주소') {
+      return '상세주소를 입력해 주시기 바랍니다.';
+    }
+    if (memberInfo['phone'] !== isPhoneChange) {
+      return '휴대번호가 변경되었으나 휴대폰 인증이 완료되지 않았습니다.';
+    }
+
+    if (isAuthentication === false) {
+      return '휴대폰 인증을 완료해주시기 바랍니다.';
+    }
+    return 'complete';
+  };
+
+  async function saveComplete() {
+    let textBox = alertText();
+    if (textBox !== 'complete') {
+      const payload = {
+        text: textBox,
+        open: true,
+      };
+      return dispatch(showAlert(payload));
+    }
+    //put api 붙이기
+    const sandData = {
+      memberIdMail: memberInfo['email'],
+      memberName: memberInfo['name'],
+      memberPass: memberInfo['password'],
+      memberPhone: memberInfo['phone'],
+      memberAddress: memberInfo['address'],
+      memberZip: memberInfo['zip'],
+      memberAddressDetail: memberInfo['addressdetail'],
+      memberFile: file,
+    };
+    const data = await accessTokenApi.put('jamong/member/modify', {
+      data: sandData,
+      headers: {
+        Authorization: member.token,
+      },
+    });
+    console.log(data);
+    //uploadFile();
+    setInfoChangePopup(!infoChangePopup);
+  }
 
   return (
     <div className="profile_box">
@@ -450,7 +536,7 @@ const ProfilePage = () => {
             <button className="pop_yes" onClick={withdraw}>
               확인
             </button>
-            <button className="pop_no" onClick={ClosePopup}>
+            <button className="pop_no" onClick={closePopup}>
               취소
             </button>
           </div>
@@ -460,7 +546,7 @@ const ProfilePage = () => {
         <div className="popup">
           <div className="popup_content">
             <p>개인정보 변경이 완료되었습니다.</p>
-            <button className="pop_ok" onClick={ClosePopup}>
+            <button className="pop_ok" onClick={completeClosePopup}>
               확인
             </button>
           </div>
@@ -470,7 +556,7 @@ const ProfilePage = () => {
         <div className="popup">
           <div className="popup_content">
             <p>회원탈퇴가 완료되었습니다.</p>
-            <button className="pop_ok" onClick={ClosePopup}>
+            <button className="pop_ok" onClick={withdrawClosePopup}>
               확인
             </button>
           </div>

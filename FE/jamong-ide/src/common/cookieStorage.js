@@ -3,27 +3,36 @@ import { Cookies } from 'react-cookie';
 const cookies = new Cookies();
 
 //리프레쉬토큰을 쿠키에 저장한다.
-export const setRefreshToken = (refreshToken) => {
-  const today = new Date();
-  const expireDate = today.setDate(today.getDate() + 14);
+// export const setRefreshToken = (refreshToken) => {
+//   const today = new Date();
+//   const expireDate = today.setDate(today.getDate() + 14);
 
-  return cookies.set('refreshtToken', refreshToken, {
-    sameSite: 'strict',
-    path: '/',
-    expires: new Date(expireDate),
-  });
-};
+//   return cookies.set('refreshtToken', refreshToken, {
+//     sameSite: 'strict',
+//     path: '/',
+//     expires: new Date(expireDate),
+//   });
+// };
 // expires : 만료
 
 //리프레쉬토큰을 가져오는 함수
 export const getCookieToken = () => {
-  return cookies.get('refreshtToken');
+  return cookies.get('Refresh');
+};
+
+export const getAccessToken = () => {
+  return cookies.get('Access');
 };
 
 //로그아웃할때 리프레쉬토큰을 지울 때 쓸 함수
-export default function removeCookieToken() {
-  return cookies.remove('refreshToken', { sameSite: 'strict', path: '/' });
+function removeCookieToken() {
+  return cookies.remove('Refresh', { sameSite: 'strict', path: '/' });
 }
+export default removeCookieToken;
+
+export const removeAccessToken = () => {
+  return cookies.remove('Access', { sameSite: 'strict', path: '/' });
+};
 
 //쿠키 사용저장 함수, 형식이 설정되어있다.
 // import {Cookies} from 'react-cookie';

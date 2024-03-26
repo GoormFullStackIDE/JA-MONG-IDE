@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import ListItemButton from '@mui/material/ListItemButton';
-import { ListItemIcon, List } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import accessTokenApi from '../common/tokenApi';
 import { Logout } from '../common/memberReducer.js';
-import removeCookieToken from '../common/cookieStorage.js';
+import removeCookieToken, {
+  removeAccessToken,
+  getAccessToken,
+  getCookieToken,
+} from '../common/cookieStorage.js';
+import { Login } from '../common/memberReducer';
+
 import axios from 'axios';
 
 const initMemberInfo = { name: '', email: '', file: '' };
@@ -16,25 +20,54 @@ function MainListItems() {
   const [isSpaceListOpen, setIsSpaceListOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const member = useSelector((state) => state.member);
   const [memberInfo, setMemberInfo] = useState(initMemberInfo);
+  const [accessToken, setAccessToken] = useState('');
+  const [refreshToken, setRefreshToken] = useState('');
 
   const toggleSpaceList = () => {
     setIsSpaceListOpen(!isSpaceListOpen);
   };
 
   useEffect(() => {
-    infoGet();
-    console.log(memberInfo);
-  }, []);
+    setAccessToken(getAccessToken());
+    setRefreshToken(getCookieToken());
+
+    //소셜로 회원가입시 리프레쉬 토큰만 들어온다.
+    //소셜로 로그인시 둘다 들어와요
+    if (accessToken && refreshToken) {
+      socialLogin();
+    }
+    if (member.token !== null) {
+      infoGet();
+    }
+
+    function socialLogin() {
+      if (accessToken) {
+        const payload = {
+          authenticated: true,
+          token: accessToken,
+        };
+        dispatch(Login(payload));
+      }
+    }
+  }, [accessToken]);
+
+  const logoutDispatch = () => {
+    const payload = { authenticated: false, token: null, expireTime: null };
+    dispatch(Logout(payload));
+  };
 
   const goLogout = () => {
-    dispatch(Logout());
     removeCookieToken();
     localStorage.clear();
-    navigate('/');
+    // removeAccessToken();
+    logoutDispatch();
+    window.location.replace('/');
   };
+
+  //소셜로 회원가입시 리프레쉬 토큰만 들어온다.
+  //소셜로 로그인시 둘다 들어와요
 
   async function infoGet() {
     try {
@@ -43,12 +76,12 @@ function MainListItems() {
           Authorization: member.token,
         },
       });
-      console.log(data.data[0]);
       setMemberInfo({
         name: data.data[0].memberName,
         email: data.data[0].memberEmail,
         file: data.data[0].memberFile,
       });
+      localStorage.setItem('memberIdMail', data.data[0].memberEmail);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (
@@ -60,6 +93,21 @@ function MainListItems() {
       }
     }
   }
+  // 소셜 로그인은 쿠키에 액세스토큰이 있으면 불러와서 디스패치 해줘야한다.
+  // 회원가입여부했을땐 리프레쉬토큰이
+  // const socialJoin = () => {
+  //   if (
+  //     (accessToken === '' || accessToken === undefined) &&
+  //     refreshToken !== ''
+  //   ) {
+  //     const payload = {
+  //       text: '소셜 회원가입이 완료되었습니다. 다시 로그인 해주시기 바랍니다.',
+  //       open: true,
+  //     };
+  //     dispatch(showAlert(payload));
+  //   }
+  // };
+
   //로그아웃 만들기 리프레쉬액세스토큰 둘다 지워야함,
   //이름,이메일, 이미지 파일 가져와서 뿌려주기
   const moveContainer = () => {};
@@ -67,15 +115,10 @@ function MainListItems() {
   return (
     <div>
       <div className="list_profile">
-        {/* <Avatar
-          sx={{ mt: 1, width: 100, height: 100, backgroundColor: '#fffdfb' }}
-          alt="jamong.png"
-          src="/images/jamong.png"
-        /> */}
         {memberInfo.file === null ? (
           <Avatar
             sx={{
-              mt: 1,
+              margin: 1,
               width: 100,
               height: 100,
               backgroundColor: '#FFF7F4',
@@ -85,7 +128,12 @@ function MainListItems() {
           />
         ) : (
           <Avatar
-            sx={{ mt: 1, width: 100, height: 100, backgroundColor: '#fffdfb' }}
+            sx={{
+              margin: 1,
+              width: 100,
+              height: 100,
+              backgroundColor: '#fffdfb',
+            }}
             alt="jamong.png"
             src={memberInfo.file}
           />
@@ -96,7 +144,13 @@ function MainListItems() {
           <button className="profile_btn" onClick={() => navigate('/profile')}>
             프로필 편집
           </button>
-          <button className="profile_btn" onClick={goLogout}>
+          <button
+            className="profile_btn"
+            onClick={() => {
+              goLogout();
+              removeAccessToken();
+            }}
+          >
             로그아웃
           </button>
         </div>

@@ -1,15 +1,48 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import MyContainer from './myContainer';
+import SharedContainer from './sharedContainer';
+import removeCookieToken, {
+  removeAccessToken,
+  getAccessToken,
+  getCookieToken,
+} from '../common/cookieStorage.js';
+import { showAlert } from '../common/confirmAlert';
+import { useSelector, useDispatch } from 'react-redux';
 
 const Container = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedStack, setSelectedStack] = useState(''); // 드롭다운의 선택된 값의 상태
   const [containerName, setContainerName] = useState('');
+  const [accessToken, setAccessToken] = useState('');
+  const [refreshToken, setRefreshToken] = useState('');
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setAccessToken(getAccessToken());
+    setRefreshToken(getCookieToken());
+    console.log(refreshToken);
+    console.log(accessToken);
+
+    if (
+      (accessToken === '' || accessToken === undefined) &&
+      refreshToken !== ''
+    ) {
+      console.log(refreshToken);
+      socialJoin();
+    }
+  }, [refreshToken]);
 
   const handleStackClick = (stack) => {
     setSelectedStack(stack);
     setShowModal(true);
   };
-
+  const socialJoin = () => {
+    const payload = {
+      text: '소셜 회원가입이 완료되었습니다. 다시 로그인 해주시기 바랍니다.',
+      open: true,
+    };
+    dispatch(showAlert(payload));
+  };
   const handleModalToggle = () => {
     setShowModal(!showModal); // 모달 창을 열거나 닫는 함수
   };
@@ -19,7 +52,7 @@ const Container = () => {
   };
 
   return (
-    <div>
+    <div className="all_container_box">
       <div className="main_container">
         <h1 className="m_title">모든 컨테이너</h1>
         <div className="m_tools">
@@ -52,25 +85,9 @@ const Container = () => {
       <div className="searchBar">
         <input type="text" placeholder="컨테이너 검색" />
       </div>
-      <article className="container">
-        <div className="com_con con_1">
-          <p className="name">컨테이너 이름</p>
-          <p className="stack"> PYTHON</p>
-          <button className="play">
-            <p>실행하기</p>
-          </button>
-        </div>
-        <div className="con_2 com_con">
-          <p>컨테이너 2</p>
-        </div>
-      </article>
-      <div className="share">
-        <p className="s_p">공유받은 컨테이너</p>
-        <div className="s_con com_con">
-          <p>컨테이너 1</p>
-        </div>
-      </div>
 
+      <MyContainer />
+      <SharedContainer />
       {showModal && (
         <div className="modal_content">
           <div className="modal_body">
@@ -99,21 +116,6 @@ const Container = () => {
           </div>
         </div>
       )}
-
-      {/* 프로필 */}
-      <div className="profile">
-        <div className="information">
-          <p className="pic">사진</p>
-          <p>김이름</p>
-          <p>example@mail.com</p>
-        </div>
-        <div className="actions">
-          <p className="edit">프로필 편집</p>
-          <p className="logout">로그아웃</p>
-        </div>
-      </div>
-
-      {/* 사이드바 */}
     </div>
   );
 };

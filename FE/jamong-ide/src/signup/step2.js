@@ -130,7 +130,7 @@ export default function Step2() {
     return dispatch(showAlert(payload));
   }
 
-  const blankText = () => {
+  const alertText = () => {
     if (memberInfo['name'] === '') {
       return '이름을 작성해 주시기 바랍니다.';
     }
@@ -152,7 +152,7 @@ export default function Step2() {
     if (memberInfo['address'] === '주소') {
       return '주소를 입력해 주시기 바랍니다.';
     }
-    if (memberInfo['detail_address'] === '주소') {
+    if (memberInfo['detail_address'] === '') {
       return '상세주소를 입력해 주시기 바랍니다.';
     }
     if (isAuthentication === false) {
@@ -162,7 +162,7 @@ export default function Step2() {
   };
 
   async function save() {
-    let textBox = blankText();
+    let textBox = alertText();
     if (textBox !== 'complete') {
       const payload = {
         text: textBox,
@@ -342,7 +342,9 @@ export default function Step2() {
         >
           회원가입
         </button>
-        <button className="button_03">이미 계정이 있나요? 로그인</button>
+        <button className="button_03" onClick={() => navigate('/login')}>
+          이미 계정이 있나요? 로그인
+        </button>
       </div>
     </div>
   );
