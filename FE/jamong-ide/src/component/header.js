@@ -51,7 +51,7 @@ export default function Header(props) {
 
   return (
     <ThemeProvider theme={colorTheme}>
-      <AppBar position="absolute" color="primary" open={open}>
+      <AppBar position="fixed" color="primary" open={open}>
         <Toolbar theme={mediaTheme}>
           <IconButton
             size="large"

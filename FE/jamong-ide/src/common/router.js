@@ -6,7 +6,7 @@ import LoginPage from '../login/login';
 import FindPasswordPage from '../find/findfassword';
 import FindIdPage from '../find/findid';
 import Container from '../main/container';
-
+import IDEpage from '../pages/IDEpage/IDEpage';
 import ProfilePage from '../component/profileEdit';
 
 export default function Router() {
@@ -19,6 +19,9 @@ export default function Router() {
       <Route path="/findpassword" element={<FindPasswordPage />} />
       <Route path="/findid" element={<FindIdPage />} />
       <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/idepage/*" element={<IDEpage />}>
+        <Route path=":id" element={<IDEpage />} />
+      </Route>
     </Routes>
   );
 }

@@ -6,16 +6,22 @@ import removeCookieToken, {
   getAccessToken,
   getCookieToken,
 } from '../common/cookieStorage.js';
+import accessTokenApi from '../common/tokenApi';
 import { showAlert } from '../common/confirmAlert';
 import { useSelector, useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 
-const Container = () => {
+const Container = (props) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedStack, setSelectedStack] = useState(''); // 드롭다운의 선택된 값의 상태
   const [containerName, setContainerName] = useState('');
   const [accessToken, setAccessToken] = useState('');
   const [refreshToken, setRefreshToken] = useState('');
   const dispatch = useDispatch();
+  const member = useSelector((state) => state.member);
+  const location = useLocation();
+
+  console.log(location.state);
 
   useEffect(() => {
     setAccessToken(getAccessToken());
@@ -25,17 +31,19 @@ const Container = () => {
 
     if (
       (accessToken === '' || accessToken === undefined) &&
-      refreshToken !== ''
+      refreshToken !== '' &&
+      member.authenticated === false
     ) {
       console.log(refreshToken);
       socialJoin();
     }
-  }, [refreshToken]);
+  }, [accessToken]);
 
   const handleStackClick = (stack) => {
     setSelectedStack(stack);
     setShowModal(true);
   };
+
   const socialJoin = () => {
     const payload = {
       text: '소셜 회원가입이 완료되었습니다. 다시 로그인 해주시기 바랍니다.',
@@ -43,8 +51,42 @@ const Container = () => {
     };
     dispatch(showAlert(payload));
   };
+
+  function nameChanged(e) {
+    const name = e.target.value;
+    setContainerName(name);
+    console.log('name', containerName);
+  }
+
+  async function createContainerClick() {
+    if (containerName !== '') {
+      const create = await accessTokenApi.post(
+        'jamong/container/create',
+        {
+          Name: containerName,
+          language: selectedStack,
+        },
+        {
+          headers: {
+            Authorization: member.token,
+          },
+        }
+      );
+      console.log('create', create);
+    } else {
+      const payload = {
+        text: '이름을 입력해주세요',
+        open: true,
+      };
+      dispatch(showAlert(payload));
+    }
+  }
+
   const handleModalToggle = () => {
     setShowModal(!showModal); // 모달 창을 열거나 닫는 함수
+    if (showModal === true) {
+      setContainerName('');
+    }
   };
 
   const handleStackChange = (e) => {
@@ -86,8 +128,21 @@ const Container = () => {
         <input type="text" placeholder="컨테이너 검색" />
       </div>
 
-      <MyContainer />
-      <SharedContainer />
+      {location.state === 'my' ? (
+        <MyContainer />
+      ) : location.state === 'shared' ? (
+        <>
+          <p className="s_p">공유받은 컨테이너</p>
+          <SharedContainer />
+        </>
+      ) : (
+        <>
+          <MyContainer />
+          <p className="s_p">공유받은 컨테이너</p>
+          <SharedContainer />
+        </>
+      )}
+
       {showModal && (
         <div className="modal_content">
           <div className="modal_body">
@@ -98,11 +153,23 @@ const Container = () => {
             <p className="modal_s">스택</p>
             {/* 드롭다운 추가 */}
             <div className="dropdown">
-              <select value={selectedStack} onChange={handleStackChange}>
-                <option value="python">Python</option>
-                <option value="c/c++">C/C++</option>
-                <option value="javascript">JavaScript</option>
-                <option value="java">Java</option>
+              <select
+                className="dropdown_select"
+                value={selectedStack}
+                onChange={handleStackChange}
+              >
+                <option className="select_option" value="python">
+                  Python
+                </option>
+                <option className="select_option" value="c/c++">
+                  C/C++
+                </option>
+                <option className="select_option" value="javascript">
+                  JavaScript
+                </option>
+                <option className="select_option" value="java">
+                  Java
+                </option>
               </select>
             </div>
             <p className="modal_n">이름</p>
@@ -110,9 +177,13 @@ const Container = () => {
               <input
                 type="text"
                 placeholder="알파벳, 숫자, 하이픈(-), 언더스코어(_)만 포함한 이름 0/20 "
+                onChange={nameChanged}
+                value={containerName}
               />
             </div>
-            <button className="m_made">생성하기</button>
+            <button className="m_made" onClick={createContainerClick}>
+              생성하기
+            </button>
           </div>
         </div>
       )}

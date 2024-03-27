@@ -132,6 +132,9 @@ function Layout() {
   function alertClose() {
     const payload = {
       open: false,
+      title: '',
+      text: '',
+      path: '',
     };
     return dispatch(showAlert(payload));
   }
@@ -175,15 +178,13 @@ function Layout() {
             open={open}
           >
             <Toolbar theme={mediaTheme}>
-              <Typography
+              {/* <Typography
                 edge="start"
                 variant="h6"
                 color="primary"
                 component="div"
                 marginLeft={1}
-              >
-                ?
-              </Typography>
+              ></Typography> */}
             </Toolbar>
             <List
               component="nav"
@@ -207,6 +208,7 @@ function Layout() {
           // height: '100%',
           overflow: 'visible',
           mt: '55px',
+          width: '100%',
         }}
       >
         {/* <Toolbar theme={mediaTheme} /> */}
@@ -238,7 +240,6 @@ function Layout() {
               onClick={alert.path !== '' ? redirectClose : alertClose}
               autoFocus
             >
-              {' '}
               확인
             </Button>
           </DialogActions>

@@ -168,11 +168,24 @@ function MainListItems() {
       </ListItemButton>
       {isSpaceListOpen && (
         <div className="space_list">
-          <button className="listbtn" onClick={() => navigate('/container')}>
+          <button
+            className="listbtn"
+            onClick={() => navigate('/container', { state: 'all' })}
+          >
             모든 컨테이너
           </button>
-          <button className="listbtn">내 컨테이너</button>
-          <button className="listbtn">공유받은 컨테이너</button>
+          <button
+            className="listbtn"
+            onClick={() => navigate('/container', { state: 'my' })}
+          >
+            내 컨테이너
+          </button>
+          <button
+            className="listbtn"
+            onClick={() => navigate('/container', { state: 'shared' })}
+          >
+            공유받은 컨테이너
+          </button>
         </div>
       )}
     </div>

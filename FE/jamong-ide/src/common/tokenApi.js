@@ -1,11 +1,14 @@
 import axios from 'axios';
-import { getCookieToken } from './cookieStorage';
+import removeCookieToken, {
+  removeAccessToken,
+  getCookieToken,
+} from './cookieStorage';
 import Config from './config';
 
 // 액세스토큰을 가져와서 헤더에 붙여 함께 axios를 보내는 함수
 const accessTokenApi = axios.create({
   baseURL: Config.API_SERVER,
-  timeout: 950 * 6300,
+  timeout: 1000 * 60 * 30,
   headers: { 'Content-Type': 'application/json' },
   // headers: {
   //     Authorization: `Bearer ${token}`,
@@ -103,12 +106,13 @@ accessTokenApi.interceptors.response.use(
       ) {
         try {
           const originRequest = config;
-
+          console.log(status);
           const tokenResponse = await postRefreshToken();
           //201 : accessToken 재발급 성공
           //200 : accessToken 재발급 성공
 
           if (tokenResponse.status === 200) {
+            console.log(tokenResponse.status);
             const newAccessToken = tokenResponse.headers.authorization;
             axios.defaults.headers.common.Authorization = newAccessToken;
             localStorage.setItem('token', newAccessToken);
@@ -123,6 +127,9 @@ accessTokenApi.interceptors.response.use(
               error.response?.status === 404 ||
               error.response?.status === 422
             ) {
+              removeCookieToken();
+              removeAccessToken();
+              localStorage.clear();
               alert('로그인이 만료되었습니다. 다시 로그인해 주시기바랍니다.');
               window.location.replace('/login');
             } else {
