@@ -1,0 +1,65 @@
+/* 화살표 스타일 */
+.list_profile {
+  width: 190px;
+  background-color: #ffeee5;
+  border: none;
+  padding: 15px 0;
+  margin: 20px 20px;
+  border-radius: 10px;
+  color: #666666;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.list_name {
+  word-wrap: break-word;
+  white-space: normal;
+  margin: 3px 10px;
+  height: 3vh;
+  width: 170px;
+}
+.list_email {
+  word-wrap: break-word;
+  white-space: normal;
+  margin: 3px 10px;
+  height: 5vh;
+  width: 170px;
+}
+.profile_dialog {
+  border: none;
+  color: #333;
+}
+.profile_dialog > p {
+  word-wrap: break-word;
+  white-space: normal;
+}
+.space {
+  padding-left: 15px;
+  height: 40px;
+  display: flex;
+
+}
+.arrow-up {
+    margin-top: 20px;
+    margin-left: 90px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 8px solid black;
+  }
+  
+  .arrow-down {
+    width: 0;
+    height: 0;
+    margin-top: 20px;
+    margin-left: 90px;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 8px solid black;
+  }
+  .space_list{
+    padding-left: 30px;
+    cursor: pointer;
+  }
+

@@ -1,0 +1,73 @@
+.container_box_01 {
+  width: 100%;
+  height: 100%;
+  margin-left: auto;
+  box-sizing: border-box;
+  margin-right: auto;
+  display: flex;
+  padding-left: 5px;
+  padding-right: 5px;
+  background-color: #fffdfb;
+}
+.container_box_02 {
+  background-color: #fffdfb;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  height: 100vh;
+  overflow: auto;
+}
+
+.header_logobox {
+  padding-top: 5px;
+  flex-grow: 1;
+  height: 53px;
+}
+
+.jamonglogo {
+  width: 150px;
+  /* margin-top: -20px; */
+  /* position: absolute; */
+}
+
+.mainpage_container {
+  height: 100%;
+  width: 100%;
+}
+
+.main_box1 {
+  height: 70vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  font-size: x-large;
+}
+
+.main_startbtn {
+  padding: 10px 10px 10px 10px;
+  width: 25vh;
+  height: 50px;
+  border: 0px;
+  border-radius: 4px;
+  text-align: center;
+  font-size: large;
+  cursor: pointer;
+  background-color: #ff6d59;
+  color: #fff;
+  transition: all ease-in-out 0.3s;
+}
+
+.mainimg {
+  position: relative;
+  width: 100%;
+}
+
+@media screen and (min-width: 600px) {
+  .mainimg {
+    position: relative;
+  }
+}
