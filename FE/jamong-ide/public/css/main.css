@@ -1,13 +1,12 @@
 .container_box_01 {
   width: 100%;
+  height: 100%;
   margin-left: auto;
   box-sizing: border-box;
   margin-right: auto;
-  display: block;
-  padding-left: 16px;
-  padding-right: 16px;
-  margin-top: 2vh;
-  margin-bottom: 1vh;
+  display: flex;
+  padding-left: 5px;
+  padding-right: 5px;
   background-color: #fffdfb;
 }
 .container_box_02 {
@@ -21,11 +20,54 @@
 }
 
 .header_logobox {
-  /* margin-top: 5px; */
+  padding-top: 5px;
   flex-grow: 1;
+  height: 53px;
 }
 
 .jamonglogo {
   width: 150px;
-  margin-top: 7px;
+  /* margin-top: -20px; */
+  /* position: absolute; */
+}
+
+.mainpage_container {
+  height: 100%;
+  width: 100%;
+}
+
+.main_box1 {
+  height: 70vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  font-size: x-large;
+}
+
+.main_startbtn {
+  padding: 10px 10px 10px 10px;
+  width: 25vh;
+  height: 50px;
+  border: 0px;
+  border-radius: 4px;
+  text-align: center;
+  font-size: large;
+  cursor: pointer;
+  background-color: #ff6d59;
+  color: #fff;
+  transition: all ease-in-out 0.3s;
+}
+
+.mainimg {
+  position: relative;
+  width: 100%;
+}
+
+@media screen and (min-width: 600px) {
+  .mainimg {
+    position: relative;
+  }
 }

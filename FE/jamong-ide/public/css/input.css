@@ -24,8 +24,8 @@ select:focus {
 }
 .input_radio_01 {
   width: 2vh;
-  height: 2vh;
-  margin: 10px 10px 0 30px;
+  height: 1.5vh;
+  margin: 10px 5px 0 30px;
 }
 
 /* 로그인 */

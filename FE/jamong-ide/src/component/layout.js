@@ -9,12 +9,26 @@ import MuiDrawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
+  ThemeProvider,
+} from '@mui/material';
+import { showAlert, closeRedirectAlert } from '../common/confirmAlert.js';
+import { createTheme } from '@mui/material/styles';
 
 function Layout() {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
-
+  const alert = useSelector((state) => state.alert);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const drawerWidth = 230;
 
   const Drawer = styled(MuiDrawer, {
@@ -46,71 +60,191 @@ function Layout() {
       }),
     },
   }));
+  //.css-1f6g6xq-MuiToolbar-root
+  const mediaTheme = createTheme({
+    components: {
+      MuiToolbar: {
+        styleOverrides: {
+          root: {
+            height: '55px',
+            minHeight: '55px',
+            '@media (min-width: 600px)': {
+              minHeight: '50px',
+            },
+          },
+          gutters: {
+            height: '55px',
+            minHeight: '55px',
+            '@media (min-width: 600px)': {
+              minHeight: '50px',
+            },
+          },
+          regular: {
+            height: '55px',
+            minHeight: '55px',
+            '@media (min-width: 600px)': {
+              minHeight: '50px',
+            },
+          },
+        },
+      },
+    },
+  });
+
+  //.css-1t1j96h-MuiPaper-root-MuiDialog-paper
+  const alertTheme = createTheme({
+    palette: {
+      primary: {
+        main: '#FFF7F4',
+      },
+    },
+    components: {
+      MuiPaper: {
+        styleOverrides: {
+          root: {
+            color: '#FFAE8C',
+            backgroundColor: '#FFF7F4',
+          },
+        },
+      },
+    },
+  });
+
+  //#FFAE8C
+  //.css-1w1rijm-MuiButtonBase-root-MuiButton-root
+  const btnTheme = createTheme({
+    components: {
+      MuiButton: {
+        variants: [
+          {
+            props: { variant: 'pink' },
+            style: {
+              textTransform: 'none',
+              borderColor: '#999999',
+              color: '#FFAE8C',
+            },
+          },
+        ],
+      },
+    },
+  });
+
+  function alertClose() {
+    const payload = {
+      open: false,
+      title: '',
+      text: '',
+      path: '',
+    };
+    return dispatch(showAlert(payload));
+  }
+
+  function redirectClose() {
+    navigate(alert.path);
+    dispatch(closeRedirectAlert());
+  }
+
+  function redirectClose() {
+    navigate(alert.path);
+    dispatch(closeRedirectAlert());
+  }
 
   return (
     <Box sx={{ display: 'flex' }}>
       {pathname === '/signup' ? (
         <></>
+      ) : pathname === '/findpassword' ? (
+        <></>
+      ) : pathname === '/findid' ? (
+        <></>
       ) : pathname === '/login' ? (
         <></>
       ) : (
-        <Header setOpen={setOpen} open={open} />
-      )}
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: open ? drawerWidth : 0,
-          flexShrink: open ? drawerWidth : 0,
-          '& .MuiDrawer-paper': {
-            width: open ? drawerWidth : 0,
-            boxSizing: 'border-box',
-          },
-        }}
-        open={open}
-      >
-        <Toolbar
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            px: [1],
-            backgroundColor: '#FFF7F4',
-          }}
-        >
-          <Typography
-            edge="start"
-            variant="h6"
-            color="primary"
-            component="div"
-            marginLeft={1}
-          ></Typography>
-        </Toolbar>
-        <List
-          component="nav"
-          sx={{
-            backgroundColor: '#FFF7F4',
-          }}
-        >
-          <MainListItems />
-          <Divider />
-        </List>
-      </Drawer>
+        <>
+          <Header setOpen={setOpen} open={open} />
 
+          <Drawer
+            variant="permanent"
+            sx={{
+              width: open ? drawerWidth : 0,
+              flexShrink: open ? drawerWidth : 0,
+              '& .MuiDrawer-paper': {
+                width: open ? drawerWidth : 0,
+                boxSizing: 'border-box',
+                height: '100%',
+                overflow: 'hidden',
+              },
+            }}
+            open={open}
+          >
+            <Toolbar theme={mediaTheme}>
+              {/* <Typography
+                edge="start"
+                variant="h6"
+                color="primary"
+                component="div"
+                marginLeft={1}
+              ></Typography> */}
+            </Toolbar>
+            <List
+              component="nav"
+              sx={{
+                backgroundColor: '#FFF7F4',
+                padding: '0px',
+              }}
+            >
+              <MainListItems />
+              <Divider />
+            </List>
+          </Drawer>
+        </>
+      )}
       {/* main div */}
       <Box
         component="main"
         sx={{
           backgroundColor: '#FFFDFB',
           flexGrow: 1,
-          height: '100vh',
-          overflow: 'auto',
+          // height: '100%',
+          overflow: 'visible',
+          mt: '55px',
+          width: '100%',
         }}
       >
-        <Toolbar />
+        {/* <Toolbar theme={mediaTheme} /> */}
 
         <div className="container_box_01">
           <Router />
         </div>
       </Box>
+
+      <ThemeProvider theme={alertTheme}>
+        <Dialog
+          backgroundColor="#FFF7F4"
+          open={alert.open}
+          onClose={alertClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          // PaperComponent={{ backgroundColor: '#FFF7F4' }}
+          // classes={{ backgroundColor: '#FFF7F4' }}
+        >
+          <DialogTitle id="alert-dialog-title">{alert.title}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {alert.text}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant="pink"
+              onClick={alert.path !== '' ? redirectClose : alertClose}
+              autoFocus
+            >
+              확인
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </ThemeProvider>
     </Box>
   );
 }
