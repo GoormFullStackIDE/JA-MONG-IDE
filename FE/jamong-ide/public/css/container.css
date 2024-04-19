@@ -1,0 +1,272 @@
+.main_container {
+  padding: 10px 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.m_title {
+  font-size: 20px;
+  position: relative;
+  margin: 30px 5px 10px 30px;
+}
+
+.m_tools {
+  width: 700px;
+  display: flex;
+  padding: 10px;
+  margin: 10px 5px 0px 30px;
+  background-color: #ffeee5;
+  border-radius: 10px;
+}
+
+.m_tools1 {
+  width: 127px;
+  height: 40px;
+  background: #fff;
+  border-radius: 10px;
+  margin-right: 20px;
+}
+.m_tools1:hover {
+  background-color: #ffae8c;
+}
+
+.m_tools1 > p {
+  text-align: center;
+  line-height: 10px;
+  cursor: pointer;
+}
+
+.searchBar {
+  padding: 10px 40px;
+}
+
+.searchBar input {
+  width: 270px;
+  padding: 10px 40px;
+  border: 1px solid #ff9b8d;
+  border-radius: 10px;
+}
+
+.container {
+  display: inline-flex;
+  margin: 15px 5px 5px 15px;
+}
+
+.com_con {
+  width: 230px;
+  height: 230px;
+  background: #ffeee5;
+  border-radius: 10px;
+}
+.name {
+  margin-block-start: 0.6em;
+  margin-block-end: 0em;
+  padding: 25px 0px 20px 35px;
+}
+.stack {
+  margin: 0 35px;
+}
+.play {
+  width: 180px;
+  height: 30px;
+  background: #ffae8c;
+  border: none;
+  border-radius: 5px;
+  position: relative;
+  top: 60px;
+  left: 25px;
+  cursor: pointer;
+}
+.play > p {
+  text-align: center;
+  margin-block-start: 0em;
+  margin-block-end: 0em;
+}
+.con_1 {
+  margin: 0 24px;
+}
+.con_2 {
+  position: relative;
+}
+.con_2 > p,
+.s_con > p {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin-block-start: 0em;
+  margin-block-end: 0em;
+}
+.share {
+  display: flex;
+  flex-direction: column;
+  margin: 25px 5px 30px 40px;
+}
+.s_p {
+  padding: 10px 0px 0px 35px;
+  font-size: large;
+}
+.s_con {
+  display: block;
+  position: relative;
+}
+
+.modal_content {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 20px;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.modal_content .close {
+  font-size: 30px;
+  float: right;
+  padding: 5px 10px;
+  cursor: pointer;
+  z-index: 2;
+  display: block;
+  color: #212121;
+}
+.close:hover,
+.close:focus {
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+}
+.modal_body {
+  background-color: #fff7f4;
+  margin: 1px;
+  padding: 20px;
+  border: none;
+  border-radius: 5px;
+  width: 570px;
+  height: 400px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.modal_body > p {
+  margin-block-start: 0em;
+  margin-block-end: 0em;
+}
+.modal_p1 {
+  padding: 10px 0 0 20px;
+  font-size: 24px;
+}
+.modal_s {
+  padding: 30px 0 0 60px;
+}
+.modal_n {
+  padding: 30px 0 0 60px;
+}
+
+.m_name {
+  width: 540px;
+  margin-top: 15px;
+  align-items: center;
+  display: flex;
+  border: none;
+}
+.m_name > input {
+  padding: 17px 40px;
+  border: none;
+  border-radius: 10px;
+  width: 450px;
+  margin: 0 5px 0 57px;
+  flex-grow: 1;
+}
+.m_name input::placeholder {
+  color: #ffae8c;
+}
+.m_name span {
+  color: #ffae8c;
+  margin-left: -150px; /* 필요에 따라 조절 */
+}
+
+.m_made {
+  width: 200px;
+  height: 50px;
+  border: none;
+  background-color: #ffae8c;
+  border-radius: 10px;
+  position: absolute;
+  top: 83%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* 스택 드롭다운 */
+.dropdown {
+  position: relative;
+}
+.dropdown_select {
+  /* background-repeat: no-repeat;
+    background-position: center;  */
+  width: 300px;
+  height: 50px;
+  border: none;
+  border-radius: 5px;
+  margin: 15px 0 0 57px;
+  padding-left: 20px;
+}
+
+.select_option {
+  background-color: #ffeee5;
+  font-size: 16px;
+  padding: 50px;
+}
+
+select option:hover {
+  background-color: #ffeee5; /* 배경색 변경 */
+}
+
+/* 프로필 */
+.profile {
+  position: absolute;
+  top: 100px;
+  right: 10px;
+  width: 200px;
+  height: auto;
+  border: 1px solid #ff9b8d;
+  text-align: center;
+  border-radius: 5px;
+}
+.pic {
+  padding: 6px;
+  border: 1px solid #000;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  margin: 7px auto;
+  line-height: 40px;
+}
+
+.information {
+  background-color: #fff;
+  border-bottom: 1px solid #ff9b8d;
+}
+
+.actions p {
+  background-color: #fff7f4;
+  margin: 0;
+  border-radius: 5px;
+  padding: 7px;
+  cursor: pointer;
+}
+.actions p:first-child {
+  border-bottom: 1px solid #ff9b8d;
+  border-radius: 0;
+}
+
+.all_container_box {
+  width: 100%;
+  height: 100vh;
+}

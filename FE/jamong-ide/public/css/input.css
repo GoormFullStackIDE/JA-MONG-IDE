@@ -1,0 +1,41 @@
+.input_00 {
+  padding: 0px 10px;
+  margin: 5px 5px;
+  width: 40vh;
+  height: 42px;
+  border: 1px solid #fffafa;
+  background-color: #fffafa;
+  border-radius: 4px;
+}
+
+input:focus,
+select:focus {
+  outline: 1px solid #ff9b8d;
+}
+
+.input_01 {
+  padding: 0px 10px;
+  margin: 5px 5px;
+  width: 32vh;
+  height: 42px;
+  border: 1px solid #fffafa;
+  background-color: #fffafa;
+  border-radius: 4px;
+}
+.input_radio_01 {
+  width: 2vh;
+  height: 1.5vh;
+  margin: 10px 5px 0 30px;
+}
+
+/* 로그인 */
+
+.input_login_00 {
+  padding: 0px 10px;
+  margin: 10px 5px;
+  width: 44vh;
+  height: 42px;
+  border: 1px solid #fffafa;
+  background-color: #fffafa;
+  border-radius: 4px;
+}
