@@ -62,8 +62,15 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
+        // configuration.setAllowedOrigins(Arrays.asList는 한 줄 추가 더 하면 X
+        // 그냥 괄호안에 무제한으로 추가하기. 사실 백엔드 링크는 넣을 필요 X 혹시몰라 일단 넣음
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3009","http://localhost:8088","https://jamongide.kro.kr","https://www.jamongide.kro.kr"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3009","http://localhost:8088","https://jamongide.kro.kr"
+                ,"https://www.jamongide.kro.kr","https://www.api.jamongide.kro.kr","http://www.api.jamongide.kro.kr"
+        ,"https://jamongide.kro.kr","http://jamongide.kro.kr","https://api.jamongide.kro.kr","http://api.jamongide.kro.kr"
+        ,"https://jamongide.kro.kr:8088","https://jamongide.kro.kr:3009","http://jamongide.kro.kr:8088","http://jamongide.kro.kr:3009"
+        ,"https://www.jamongide.kro.kr:8088","http://jamongide.kro.kr:3009","https://api.jamongide.kro.kr:8088"
+        ,"https://api.jamongide.kro.kr:3009","https://www.jamongide.kro.kr:8088","https://www.jamongide.kro.kr:3009"));
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
         configuration.setExposedHeaders(Arrays.asList("Authorization","Sequence","Nickname","Image"));
         configuration.setAllowedHeaders(Arrays.asList("X-Requested-With", "Origin", "Content-Type", "Accept",
@@ -71,7 +78,14 @@ public class SecurityConfig {
                 "Access-Control-Allow-Origin", "Access-Control-Expose-Headers", "Access-Control-Max-Age",
                 "Access-Control-Request-Headers", "Access-Control-Request-Method", "Age", "Allow", "Alternates",
                 "Content-Range", "Content-Disposition", "Content-Description"));
-        configuration.setAllowedOriginPatterns(Collections.singletonList("http://localhost:3009"));
+//        configuration.setAllowedOriginPatterns(Collections.singletonList("http://localhost:3009"));
+        // configuration.setAllowedOrigins(Arrays.asList랑 조금 다름
+        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3009","http://localhost:8088","https://jamongide.kro.kr"
+                ,"https://www.jamongide.kro.kr","https://www.api.jamongide.kro.kr","http://www.api.jamongide.kro.kr"
+                ,"https://jamongide.kro.kr","http://jamongide.kro.kr","https://api.jamongide.kro.kr","http://api.jamongide.kro.kr"
+                ,"https://jamongide.kro.kr:8088","https://jamongide.kro.kr:3009","http://jamongide.kro.kr:8088","http://jamongide.kro.kr:3009"
+                ,"https://www.jamongide.kro.kr:8088","http://jamongide.kro.kr:3009","https://api.jamongide.kro.kr:8088"
+                ,"https://api.jamongide.kro.kr:3009","https://www.jamongide.kro.kr:8088","https://www.jamongide.kro.kr:3009"));
         configuration.setMaxAge(60L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

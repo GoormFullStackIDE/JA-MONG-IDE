@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.Optional;
 
+// entity 생성 후 compile해서 생긴 Qclass
 import static com.groom.demo.member.entity.QMember.member;
 
 public class MemberRepositoryImpl implements MemberRepositoryCustom {
@@ -121,5 +122,30 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                         .fetchFirst()
         );
     }
+
+    // Refresh Token과 IdEmail 같은지 확인
+    @Override
+    public Optional<Long> memberRefreshTokenAndIdMail(String memberIdMail, String memberToken) {
+        return Optional.ofNullable(
+                queryFactory.select(member.memberNo)
+                        .from(member)
+                        .where(
+                                member.memberIdEmail.eq(memberIdMail)
+                                        .and(member.memberToken.eq(memberToken))
+                        )
+                        .fetchFirst()
+        );
+    }
+
+//    // 제욱님
+//    @Override
+//    public Optional<Long> porjectOwnerNo(String ownerMail) {
+//        return Optional.ofNullable(
+//                queryFactory.select(member.memberNo)
+//                        .from(member)
+//                        .where(member.memberIdEmail.eq(ownerMail))
+//                        .fetchFirst()
+//        );
+//    }
 
 }

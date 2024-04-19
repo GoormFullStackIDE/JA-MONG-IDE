@@ -71,15 +71,18 @@ public class Member {
     @Column(name = "member_isdelete")
     private Boolean memberIsDelete = false;
 
+    // 일반 & 소셜로그인시 Refresh Token DB 저장
     public void changeToken(String memberToken) {
         this.memberToken = memberToken;
         this.memberLastLogin = LocalDateTime.now();
     }
 
+    // 회원 탈퇴
     public void memberDelete(Boolean memberIsDelete) {
         this.memberIsDelete = memberIsDelete;
     }
 
+    // 비밀번호 변경
     public void memberUpdatePW(String changePW) {
         this.memberPass = BCrypt.hashpw(changePW, BCrypt.gensalt()); ;
     }

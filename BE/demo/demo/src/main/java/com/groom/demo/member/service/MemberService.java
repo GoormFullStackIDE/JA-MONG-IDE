@@ -17,6 +17,9 @@ public interface MemberService  {
     // 일반 로그인
     Long memberLogin(String memberIdEmail, String memberPass);
 
+    // 일반 로그인시 Refresh Token DB 저장
+    void normalLoginRefreshToken(Long memberNo, String refreshToken);
+
     // 회원 탈퇴시
     Boolean memberIsDelete(Long memberNo);
 
@@ -34,5 +37,8 @@ public interface MemberService  {
 
     // 프로필 편집
     void memberProfileModify(MemberModifyDTO memberModifyDTO, Long memberTokenNo, String imgLink);
+
+    // Refresh Token과 IDMail이 같은지 확인하기
+    Long isRefreshTokenAndIdOk(SendRefreshRequestAccessDTO sendRefreshRequestAccessDTO);
 
 }

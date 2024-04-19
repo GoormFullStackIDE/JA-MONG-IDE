@@ -11,6 +11,7 @@ import io.micrometer.common.util.StringUtils;
 import jakarta.mail.Authenticator;
 import jakarta.mail.PasswordAuthentication;
 import jakarta.mail.Session;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.NurigoApp;
@@ -18,12 +19,11 @@ import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
-import org.antlr.v4.runtime.misc.FlexibleHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +34,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static com.groom.demo.auth.util.JwtTokenUtils.REFRESH_PERIOD;
+
 @Slf4j
 @RestController
 @CrossOrigin("*")
@@ -41,15 +43,15 @@ import java.util.concurrent.ThreadLocalRandom;
 public class MemberController {
     // 휴대폰 인증번호 발신
     public static DefaultMessageService messageService;
-    // 임시 비밀번호 메일 전송
-    @Autowired
-    private JavaMailSender javaMailSender;
+
     // 그 외 Member관련된 것들
     @Autowired
     private MemberService memberService;
 
+    //혹시 모름@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     @Autowired
     private S3UploadService s3UploadService;
+    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     @Autowired
     private AuthConfig authConfig;
 
@@ -113,6 +115,7 @@ public class MemberController {
     // Memberinfo
     @GetMapping("/info")
     public ResponseEntity<?> info() {
+        // JWT에는 MemberNo가 포함되어 있다. 그 정보만 빼온 것
         Long memberId = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         List<MemberPageInfoDto> memberPageInfoDtoList = memberService.memberdata(memberId);
         return new ResponseEntity<>(memberPageInfoDtoList, HttpStatus.OK);
@@ -120,7 +123,7 @@ public class MemberController {
 
     // 일반 로그인
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid MemberloginDTO memberloginDTO) {
+    public ResponseEntity<?> login(@RequestBody @Valid MemberloginDTO memberloginDTO, HttpServletResponse response) {
         Map<String, String> responsebody = new HashMap<>();
         responsebody.put("message", "Success");
         Long normalLogin = memberService.memberLogin(memberloginDTO.getMemberIdEmail(), memberloginDTO.getMemberPass());
@@ -131,6 +134,15 @@ public class MemberController {
             JsonWebToken jsonWebToken = JwtTokenUtils.allocateToken(normalLogin, "ROLE_USER");
             MultiValueMap<String, String> headers = new HttpHeaders();
             headers.add("Authorization", jsonWebToken.getAccessToken());
+            // 리프레시 토큰을 넣어준다. 해당 member_Token에 넣자!
+            memberService.normalLoginRefreshToken(normalLogin, jsonWebToken.getRefreshToken());
+            ResponseCookie cookie = ResponseCookie.from("Refresh",jsonWebToken.getRefreshToken())
+                    .sameSite("None")
+                    .secure(true)
+                    .path("/")
+                    .maxAge(REFRESH_PERIOD)
+                    .build();
+            headers.add("Set-Cookie",cookie.toString());
             return new ResponseEntity<>(responsebody, headers, HttpStatus.OK);
         }
     }
@@ -205,7 +217,8 @@ public class MemberController {
 
         return new ResponseEntity<>(responsebody, HttpStatus.OK);
     }
-// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    // 혹시 모름
 
     // 프로필편집 - 이미지 등록
     @PutMapping("/modify")
@@ -236,4 +249,53 @@ public class MemberController {
 
 
     }
+//   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+    // Access Token 값 만료 되었을 경우 Refresh Token 전달 후 새로운 Access Token 생성
+    @PostMapping("/accesstoken")
+    public ResponseEntity<?> accessToken(@RequestBody SendRefreshRequestAccessDTO sendRefreshRequestAccessDTO) {
+        Map<String, String> responsebody = new HashMap<>();
+        responsebody.put("message", "Success");
+        Long newAccessToken = memberService.isRefreshTokenAndIdOk(sendRefreshRequestAccessDTO);
+
+        if (newAccessToken == null) {
+            return new ResponseEntity<>("잘못된 처리입니다. 다시 로그인 해주세요.", HttpStatus.BAD_REQUEST);
+        } else {
+            JsonWebToken jsonWebToken = JwtTokenUtils.allocateToken(newAccessToken, "ROLE_USER");
+            MultiValueMap<String, String> headers = new HttpHeaders();
+            headers.add("Authorization", jsonWebToken.getAccessToken());
+
+            return new ResponseEntity<>(responsebody, headers, HttpStatus.OK);
+        }
+    }
+
+    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@//
+    // 또.. 혹시 모름..
+//    // 프로필편집 - 이미지 등록
+//    @PutMapping("/modify")
+//    public ResponseEntity<?> modifyProfile(@RequestBody MemberModifyDTO memberModifyDTO) {
+//        Map<String, String> responsebody = new HashMap<>();
+//        responsebody.put("message", "Success");
+//        Long modifyMemberNo = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+//        String name = memberModifyDTO.getMemberName();
+//        String phone = memberModifyDTO.getMemberPhone();
+//        String pass = memberModifyDTO.getMemberPass();
+//
+//        if (StringUtils.isBlank(name) || StringUtils.isBlank(phone) || StringUtils.isBlank(pass)) {
+//
+//            return new ResponseEntity<>("이름, 휴대폰번호, 비밀번호는 빈 값으로 두면 안됩니다.", HttpStatus.BAD_REQUEST);
+//        }
+//
+//        if (memberService.isProfileOK(memberModifyDTO.getMemberPass(), modifyMemberNo)) {
+//            String uploadIMG = memberModifyDTO.getMemberFile();
+//            memberService.memberProfileModify(memberModifyDTO, modifyMemberNo, uploadIMG);
+//            return new ResponseEntity<>(responsebody, HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>("직전에 사용했던 비밀번호로는 수정할 수 없습니다.", HttpStatus.BAD_REQUEST);
+//
+//        }
+//
+//
+//    }
+
 }
