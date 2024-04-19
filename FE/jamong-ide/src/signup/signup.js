@@ -4,7 +4,7 @@ import Step2 from './step2';
 
 function SignUp() {
   const [stepNum, setStepNum] = useState(0);
-  const pageInfo = [{ title: '약관동의' }, { num: 2, title: '회원정보' }];
+  const pageInfo = [{ title: '약관동의' }, { title: '회원정보' }];
 
   return (
     <div id="join">
