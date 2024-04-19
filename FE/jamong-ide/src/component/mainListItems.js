@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import ListItemButton from '@mui/material/ListItemButton';
 import { useSelector, useDispatch } from 'react-redux';
@@ -25,9 +26,11 @@ function MainListItems() {
   const [accessToken, setAccessToken] = useState('');
   const [refreshToken, setRefreshToken] = useState('');
 
+
   const toggleSpaceList = () => {
     setIsSpaceListOpen(!isSpaceListOpen);
   };
+
 
   useEffect(() => {
     setAccessToken(getAccessToken());
@@ -159,6 +162,7 @@ function MainListItems() {
       <ListItemButton onClick={toggleSpaceList}>
         <div className="space">
           <p> 스페이스 </p>
+
           {isSpaceListOpen ? (
             <div className="arrow-up" />
           ) : (
@@ -167,6 +171,7 @@ function MainListItems() {
         </div>
       </ListItemButton>
       {isSpaceListOpen && (
+
         <div className="space_list">
           <button
             className="listbtn"
@@ -186,6 +191,7 @@ function MainListItems() {
           >
             공유받은 컨테이너
           </button>
+
         </div>
       )}
     </div>
@@ -193,3 +199,4 @@ function MainListItems() {
 }
 
 export default MainListItems;
+

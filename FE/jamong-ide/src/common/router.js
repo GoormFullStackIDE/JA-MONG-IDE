@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Main from '../component/main';
+
 import SignUp from '../signup/signup';
 import LoginPage from '../login/login';
 import FindPasswordPage from '../find/findfassword';
@@ -12,6 +13,7 @@ import ProfilePage from '../component/profileEdit';
 export default function Router() {
   return (
     <Routes>
+
       <Route path="/" element={<Main />} />
       <Route path="/container" element={<Container />} />
       <Route path="/signup" element={<SignUp />} />
@@ -22,6 +24,7 @@ export default function Router() {
       <Route path="/idepage/*" element={<IDEpage />}>
         <Route path=":id" element={<IDEpage />} />
       </Route>
+
     </Routes>
   );
 }
